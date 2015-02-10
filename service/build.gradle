@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+dependencies {
+    compile "javax.ws.rs:jsr311-api:1.1.1"
+
+    compile 'com.sun.jersey:jersey-server:1.13'
+    compile 'com.sun.jersey:jersey-core:1.13'
+    compile 'com.sun.jersey:jersey-servlet:1.13'
+
+    testCompile "junit:junit-dep:4.+"
+}
+
+/*
+If you are using eclipse, you can pull dependencies and import
+into the classpath by running gradle jar eclipseClasspath
+*/
