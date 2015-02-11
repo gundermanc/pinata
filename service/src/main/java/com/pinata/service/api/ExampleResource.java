@@ -1,4 +1,4 @@
-package com.pinata.service;
+package com.pinata.service.api;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

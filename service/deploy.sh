@@ -9,5 +9,5 @@ gradle clean build test
 
 if [ $? -eq 0 ]
 then
-    sudo cp -f build/libs/service.war /var/lib/tomcat8/webapps/ROOT.war
+    sudo cp -f build/libs/service.war /var/lib/tomcat6/webapps/ROOT.war
 fi
