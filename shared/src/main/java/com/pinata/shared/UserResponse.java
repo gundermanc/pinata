@@ -5,12 +5,12 @@ import java.util.Date;
 import flexjson.JSON;
 
 /**
- * CreateUser JSON Response from server to client.
+ * User JSON Response from server to client.
  * @author Christian Gunderman
  */
-public class CreateUserResponse extends ApiResponse {
+public class UserResponse extends ApiResponse {
 
-    /** New user username. */
+    /** Username. */
     @JSON(include=true, name="user")
     public String user;
 
@@ -18,31 +18,31 @@ public class CreateUserResponse extends ApiResponse {
     @JSON(include=true, name="pass")
     public String pass = null;
 
-    /** Gender of new user. */
+    /** Gender of user. */
     @JSON(include=true, name="gender")
     public String gender;
 
-    /** Date new user joined. Determined serverside and passed back. */
+    /** Date user joined. Determined serverside and passed back. */
     @JSON(include=true, name="join_date")
     public Date joinDate;
 
-    /** New user's birthday. */
+    /** User's birthday. */
     @JSON(include=true, name="birthday")
     public Date birthday;
 
     /**
-     * Creates a new CreateUserResponse object.
+     * Creates a new UserResponse object.
      * @param status The status of the operation.
      * @param user The username of the new user.
      * @param gender MALE or FEMALE.
      * @param joinDate The date the new user joined.
      * @param birthday The birthday of the new user.
      */
-    public CreateUserResponse(ApiStatus status,
-                              String user,
-                              String gender,
-                              Date joinDate,
-                              Date birthday) {
+    public UserResponse(ApiStatus status,
+                        String user,
+                        String gender,
+                        Date joinDate,
+                        Date birthday) {
         super(status);
         this.user = user;
         this.pass = null;

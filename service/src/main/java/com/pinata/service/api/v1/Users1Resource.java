@@ -5,13 +5,14 @@ import java.net.URI;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.WebApplicationException;
 
 import com.pinata.service.datatier.SQLConnection;
 import com.pinata.service.objectmodel.User;
@@ -19,10 +20,10 @@ import com.pinata.service.objectmodel.User;
 import com.pinata.shared.ApiException;
 import com.pinata.shared.ApiStatus;
 import com.pinata.shared.CreateUserRequest;
-import com.pinata.shared.CreateUserResponse;
+import com.pinata.shared.UserResponse;
 
 /**
- * Users resource used for the creation and deletion of users. v1.
+ * Users resource used for the creation of users. v1.
  * @author Christian Gunderman
  */
 @Path("v1/users")
@@ -62,13 +63,33 @@ public class Users1Resource {
 
         URI newUserUri = uriInfo.getRequestUriBuilder()
             .path(user.getUsername()).build();
-        CreateUserResponse createUserResponse 
-            = new CreateUserResponse(ApiStatus.CREATED,
-                                     user.getUsername(),
-                                     user.getGender(),
-                                     user.getJoinDate(),
-                                     user.getBirthday());
+
+        UserResponse userResponse = user.toResponse(ApiStatus.CREATED);
+
         return Response.created(newUserUri)
-            .entity(createUserResponse.serialize()).build();
+            .entity(userResponse.serialize()).build();
+    }
+
+    /**
+     * GET request. Pulls down user's profile.
+     * @param username Username of the user to pull down.
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{username}")
+    public Response get(@PathParam("username") String username)
+        throws ApiException {
+
+        SQLConnection sql = SQLConnection.connectDefault();
+
+        User user = null;
+        try {
+            user = User.lookup(sql, username);
+        } finally {
+            sql.close();
+        }
+
+        UserResponse userResponse = user.toResponse(ApiStatus.OK);
+        return Response.ok(userResponse.serialize()).build();
     }
 }

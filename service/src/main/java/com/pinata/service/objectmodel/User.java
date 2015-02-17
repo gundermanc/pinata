@@ -2,8 +2,12 @@ package com.pinata.service.objectmodel;
 
 import java.util.Date;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.pinata.shared.ApiException;
 import com.pinata.shared.ApiStatus;
+import com.pinata.shared.UserResponse;
 
 import com.pinata.service.datatier.SQLConnection;
 import com.pinata.service.datatier.UsersTable;
@@ -92,6 +96,39 @@ public class User {
 
         return new User(username, gender, joinDate, birthday);
     }
+
+    /**
+     * Looks up a user in the datatier and returns it as a User object.
+     * @throws ApiException With APP_USER_NOT_EXIST if user doesn't exist,
+     * or another code if SQL error occurs.
+     * @param sql The SQL connection.
+     * @param username The username of the user to look up.
+     * @return A new user object for the user.
+     */
+    public static User lookup(SQLConnection sql, String username)
+        throws ApiException {
+
+        // Null check everything:
+        OMUtil.sqlCheck(sql);
+        OMUtil.nullCheck(username);
+
+        ResultSet result = UsersTable.lookupUser(sql, username);
+
+        // Build User object.
+        try {
+            // Get the first (and only) row or throw if user not exist.
+            if (!result.next()) {
+                throw new ApiException(ApiStatus.APP_USER_NOT_EXIST);
+            }
+            
+            return new User(result.getString("user"),
+                            result.getString("gender"),
+                            result.getDate("join_date"),
+                            result.getDate("birth_date"));
+        } catch (SQLException ex) {
+            throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
+        }
+    }
     
     /**
      * Gets username.
@@ -123,6 +160,14 @@ public class User {
      */
     public Date getBirthday() {
         return this.birthday;
+    }
+
+    public UserResponse toResponse(ApiStatus status) {
+        return new UserResponse(status,
+                                this.getUsername(),
+                                this.getGender(),
+                                this.getJoinDate(),
+                                this.getBirthday());
     }
 
     /**

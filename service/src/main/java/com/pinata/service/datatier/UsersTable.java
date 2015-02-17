@@ -2,6 +2,7 @@ package com.pinata.service.datatier;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
@@ -35,6 +36,10 @@ public class UsersTable {
     private static final String INSERT_USER_QUERY =
         "INSERT INTO Users (user, pass, gender, join_date, birth_date)" +
         " VALUES (?,?,?,?,?)";
+
+    /** Lookup user query. */
+    private static final String LOOKUP_USER_QUERY =
+        "SELECT * FROM Users WHERE user=?";
 
     /**
      * Creates this table, failing if it already exists.
@@ -86,6 +91,30 @@ public class UsersTable {
             // We have no foreign or unique keys other than primary
             // so this can only be thrown for duplicate users.
             throw new ApiException(ApiStatus.APP_USERNAME_TAKEN, ex);
+        } catch (SQLException ex) {
+            throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
+        }
+    }
+
+    /**
+     * Looks up a user in the database and returns the associated ResultSet.
+     * @throws ApiException If a SQL error occurs.
+     * @param sql The database connection.
+     * @param user The user to look up.
+     * @return user A ResultSet containing the user. Should contain only a
+     * single row.
+     */
+    public static ResultSet lookupUser(SQLConnection sql, String user)
+        throws ApiException {
+
+        Connection connection = sql.connection;
+
+        try {
+            PreparedStatement lookupStatement =
+                connection.prepareStatement(LOOKUP_USER_QUERY);
+            lookupStatement.setString(1, user);
+
+            return lookupStatement.executeQuery();
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
