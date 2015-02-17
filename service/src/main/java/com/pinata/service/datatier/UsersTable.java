@@ -24,6 +24,7 @@ public class UsersTable {
         "CREATE TABLE Users(" +
         "  user VARCHAR(25) NOT NULL," +
         "  pass VARCHAR(64) NOT NULL," +
+        "  gender VARCHAR(6) NOT NULL," +
         "  join_date DATETIME NOT NULL," +
         "  birth_date DATETIME NOT NULL," +
         "  PRIMARY KEY(user)," +
@@ -32,7 +33,8 @@ public class UsersTable {
 
     /** Create user query. */
     private static final String INSERT_USER_QUERY =
-        "INSERT INTO Users (user, pass, join_date, birth_date) VALUES (?,?,?,?)";
+        "INSERT INTO Users (user, pass, gender, join_date, birth_date)" +
+        " VALUES (?,?,?,?,?)";
 
     /**
      * Creates this table, failing if it already exists.
@@ -58,12 +60,14 @@ public class UsersTable {
      * @param sql The SQLConnection.
      * @param user The username of the new user.
      * @param pass The password of the new user.
+     * @param gender A value up to 6 chars. Should be MALE or FEMALE.
      * @param joinDate The date that the new user joined.
      * @param birthDate The new user's birthday.
      */
     public static void insertUser(SQLConnection sql,
                                   String user,
                                   String pass,
+                                  String gender,
                                   Date joinDate,
                                   Date birthDate) throws ApiException {
         Connection connection = sql.connection;
@@ -73,8 +77,9 @@ public class UsersTable {
                 = connection.prepareStatement(INSERT_USER_QUERY);
             insertStatement.setString(1, user);
             insertStatement.setString(2, pass);
-            insertStatement.setDate(3, new java.sql.Date(joinDate.getTime()));
-            insertStatement.setDate(4, new java.sql.Date(birthDate.getTime()));
+            insertStatement.setString(3, gender);
+            insertStatement.setDate(4, new java.sql.Date(joinDate.getTime()));
+            insertStatement.setDate(5, new java.sql.Date(birthDate.getTime()));
 
             insertStatement.execute();
         } catch (SQLIntegrityConstraintViolationException ex) {

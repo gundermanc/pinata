@@ -18,6 +18,10 @@ public class CreateUserRequest extends ApiRequest {
     @JSON(include=true, name="pass")
     public String pass;
 
+    /** New user's gender." */
+    @JSON(include=true, name="gender")
+    public String gender;
+
     /** New user's birthday. */
     @JSON(include=true, name="birthday")
     public Date birthday;

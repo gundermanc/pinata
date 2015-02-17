@@ -26,8 +26,14 @@ public class User {
     private static int PASS_MIN = 6;
     /** Maximum password length. */
     private static int PASS_MAX = 100;
+    /** MALE user id. */
+    private static String GENDER_MALE = "MALE";
+    /** FEMALE user id. */
+    private static String GENDER_FEMALE = "FEMALE";
     /** Username. */
     private String username;
+    /** User's gender. */
+    private String gender;
     /** Date user joined. */
     private Date joinDate;
     /** User's birthday. */
@@ -39,6 +45,7 @@ public class User {
      * set of values or a database error occurs.
      * @param sql The connection to the database.
      * @param username The user's username.
+     * @param gender The user's MALE or FEMALE gender String.
      * @param password The user's password.
      * @param birthday The user's birthday.
      * @return A new User object containing the created user.
@@ -46,11 +53,13 @@ public class User {
     public static User create(SQLConnection sql,
                               String username,
                               String password,
+                              String gender,
                               Date birthday) throws ApiException {
 
         // Null check everything:
         OMUtil.sqlCheck(sql);
         OMUtil.nullCheck(username);
+        OMUtil.nullCheck(gender);
         OMUtil.nullCheck(password);
         OMUtil.nullCheck(birthday);
 
@@ -64,6 +73,12 @@ public class User {
             throw new ApiException(ApiStatus.APP_INVALID_PASS_LENGTH);
         }
 
+        // Check gender for proper values.
+        gender = gender.toUpperCase();
+        if (!gender.equals(GENDER_MALE) && !gender.equals(GENDER_FEMALE)) {
+            throw new ApiException(ApiStatus.INVALID_GENDER);
+        }
+
         // Check for future birthdays.
         Date today = new Date();
         if (!today.after(birthday)) {
@@ -72,9 +87,10 @@ public class User {
 
         // Query DB.
         Date joinDate = new Date();
-        UsersTable.insertUser(sql, username, OMUtil.sha256(password), joinDate, birthday);
+        UsersTable.insertUser(sql, username, OMUtil.sha256(password),
+                              gender, joinDate, birthday);
 
-        return new User(username, joinDate, birthday);
+        return new User(username, gender, joinDate, birthday);
     }
     
     /**
@@ -83,6 +99,14 @@ public class User {
      */
     public String getUsername() {
         return this.username;
+    }
+
+    /**
+     * Gets user's gender.
+     * @return User's gender as a String, MALE or FEMALE.
+     */
+    public String getGender() {
+        return this.gender;
     }
 
     /**
@@ -105,11 +129,13 @@ public class User {
      * Creates a new User OM object. Constructor is private because User
      * objects can only be created internally from data tier or calls to create().
      * @param username The user's username.
+     * @param gender The user's gender, MALE or FEMALE.
      * @param password The user's password.
      * @param birthday The user's birthday.
      */
-    private User(String username, Date joinDate, Date birthday) {
+    private User(String username, String gender, Date joinDate, Date birthday) {
         this.username = username;
+        this.gender = gender;
         this.joinDate = joinDate;
         this.birthday = birthday;
     }

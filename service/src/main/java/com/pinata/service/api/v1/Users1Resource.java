@@ -51,7 +51,11 @@ public class Users1Resource {
 
         User user = null;
         try {
-            user = User.create(sql, request.user, request.pass, request.birthday);
+            user = User.create(sql,
+                               request.user,
+                               request.pass,
+                               request.gender,
+                               request.birthday);
         } finally {
             sql.close();
         }
@@ -61,6 +65,7 @@ public class Users1Resource {
         CreateUserResponse createUserResponse 
             = new CreateUserResponse(ApiStatus.CREATED,
                                      user.getUsername(),
+                                     user.getGender(),
                                      user.getJoinDate(),
                                      user.getBirthday());
         return Response.created(newUserUri)
