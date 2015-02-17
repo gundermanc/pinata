@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -90,6 +91,30 @@ public class Users1Resource {
         }
 
         UserResponse userResponse = user.toResponse(ApiStatus.OK);
+        return Response.ok(userResponse.serialize()).build();
+    }
+
+    /**
+     * DELETE request. Deletes the specified user and returns it's details.
+     * @param username Username of the user to delete
+     */
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{username}")
+    public Response delete(@PathParam("username") String username)
+        throws ApiException {
+
+        SQLConnection sql = SQLConnection.connectDefault();
+
+        User user = null;
+        try {
+            user = User.lookup(sql, username);
+            user.delete(sql);
+        } finally {
+            sql.close();
+        }
+
+        UserResponse userResponse = user.toResponse(ApiStatus.DELETED);
         return Response.ok(userResponse.serialize()).build();
     }
 }

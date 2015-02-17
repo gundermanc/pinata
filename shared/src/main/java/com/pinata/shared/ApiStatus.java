@@ -8,6 +8,7 @@ public enum ApiStatus {
     // Success codes.
     OK(200, 200, "Success."),
     CREATED(201, 201, "Created."),
+    DELETED(225, 200, "Deleted."),
 
     // Client errors.
     MALFORMED_REQUEST(400, 400, "Server received malformed request."),

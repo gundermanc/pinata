@@ -129,6 +129,32 @@ public class User {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
     }
+
+    /**
+     * Deletes a user.
+     * @throws ApiException If a database error occurs.
+     * @param sql The SQL connection.
+     * @param username The username of the user to delete.
+     */
+    public static void delete(SQLConnection sql, String username)
+        throws ApiException {
+
+        // Null check everything:
+        OMUtil.sqlCheck(sql);
+        OMUtil.nullCheck(username);
+
+        // Try to delete
+        UsersTable.deleteUser(sql, username);
+    }
+
+    /**
+     * Deletes this user.
+     * @throws ApiException If a database error occurs.
+     * @param sql The SQL connection.
+     */
+    public void delete(SQLConnection sql) throws ApiException {
+        User.delete(sql, this.getUsername());
+    }
     
     /**
      * Gets username.
@@ -184,5 +210,4 @@ public class User {
         this.joinDate = joinDate;
         this.birthday = birthday;
     }
-
 }

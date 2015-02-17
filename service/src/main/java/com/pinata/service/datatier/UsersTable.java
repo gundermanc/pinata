@@ -41,6 +41,10 @@ public class UsersTable {
     private static final String LOOKUP_USER_QUERY =
         "SELECT * FROM Users WHERE user=?";
 
+    /** Delete user query. */
+    private static final String DELETE_USER_QUERY =
+        "DELETE FROM Users WHERE user=?";
+
     /**
      * Creates this table, failing if it already exists.
      * @param sql The SQLConnection instance. Probably requires root.
@@ -115,6 +119,31 @@ public class UsersTable {
             lookupStatement.setString(1, user);
 
             return lookupStatement.executeQuery();
+        } catch (SQLException ex) {
+            throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
+        }
+    }
+
+    /**
+     * Deletes a user in the database.
+     * @throws ApiException If a SQL error occurs or unable to delete.
+     * @param sql The database connection.
+     * @param user The user to look up.
+     */
+    public static void deleteUser(SQLConnection sql, String user)
+        throws ApiException {
+
+        Connection connection = sql.connection;
+
+        try {
+            PreparedStatement deleteStatement =
+                connection.prepareStatement(DELETE_USER_QUERY);
+            deleteStatement.setString(1, user);
+
+            // Execute and check that deletion was successful.
+            if (deleteStatement.executeUpdate() != 1) {
+                throw new ApiException(ApiStatus.APP_USER_NOT_EXIST);
+            }
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
