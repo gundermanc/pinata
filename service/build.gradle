@@ -1,3 +1,6 @@
+// Pinata API Server Gradle Build Script
+// (C) 2015 Christian Gunderman
+
 apply plugin: 'war'
 
 dependencies {
@@ -7,5 +10,6 @@ dependencies {
     compile 'com.sun.jersey:jersey-core:1.13'
     compile 'com.sun.jersey:jersey-servlet:1.13'
 
+    compile 'mysql:mysql-connector-java:5.1.6'
     compile project(':shared')
 }

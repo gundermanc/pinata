@@ -1,0 +1,3 @@
+dependencies {
+    compile 'net.sf.flexjson:flexjson:3.3'
+}

@@ -1,4 +1,5 @@
-
+// Pinata All Projects Gradle Build Script
+// (C)2015 Christian Gunderman
 allprojects {
 
 }
@@ -23,18 +24,5 @@ subprojects {
             events "passed", "skipped", "failed"
             exceptionFormat "full" // default is "short"
         }
-    }
-}
-
-
-project(':service') {
-    apply plugin: 'war'
-
-    dependencies {
-        compile "javax.ws.rs:jsr311-api:1.1.1"
-
-        compile 'com.sun.jersey:jersey-server:1.13'
-        compile 'com.sun.jersey:jersey-core:1.13'
-        compile 'com.sun.jersey:jersey-servlet:1.13'
     }
 }

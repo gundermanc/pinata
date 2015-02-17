@@ -1,0 +1,52 @@
+Pinata API Server
+Pinata Share API Framework
+Pinata Android Client
+Pinata iOS Client
+(C) 2015 Christian Gunderman
+
+LAYOUT:
+ Pinata is composed of 4 parent projects, as of this writing. The main design
+ philosophy behind the application is the minimization of work and the
+ elimination of duplicate code so that we can progress quickly. As such, most
+ of the application behavior logic is server side. Any corner cases, such as
+ string lengths, etc. will be initially handled server side to minimize client
+ code, but later moved to client code to reduce server calls.
+
+ Whenever possible, client code will be put in the shared subproject so that it
+ can be cross compiled with Google's J2ObjC compiler and used with iOS.
+
+ - service                    - Pinata API REST Server.
+   - api                      - REST API controllers.
+   - objectmodel              - Defines application business logic and behavior.
+   - datatier                 - MySQL wrapper classes and interfaces.
+   - webui                    - Future location for a Web base HTML client.
+ - shared                     - Shared Java code used by Client and Server
+                                including all of the REST requests,
+                                JSON serialization code, and errors/exceptions.
+ - android                    - Android application project. Depends on shared
+                                library for REST request code, error enums, and
+                                JSON serialization.
+ - ios                        - iOS project, will focus mainly on UI aspects. If
+                                possible, most application logic will either
+                                live server side, or in the shared library,
+                                which will be cross compiled with J2ObjC.
+SETUP:
+ - Install Gradle             - sudo apt-get install gradle
+ - Install MySQL              - sudo apt-get install mysql-server[version]
+ - Install MySQL Connector    - sudo apt-get install libmysql-java
+ - Install Oracle-Java-7      - http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html
+ - Install Tomcat[7/8]        - sudo apt-get install tomcat[7/8]
+
+BUILD (service):
+ - With Gradle                - gradle build
+
+DEPLOY (service, must be deployed before DB can be installed):
+ - Application Deploy Script  - ./deploy.sh
+ - Restart Tomcat             - sudo service tomcat[7/8] restart
+
+INSTALL DATABASE:
+ - Database Install Script    - ./install_db.sh
+
+BUILD/DEPLOY (android):
+ Uses ant build system at the moment till we get Gradle working. Until then,
+ - Install debug config       - ant installd
