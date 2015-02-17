@@ -94,8 +94,6 @@ public class SQLConnection  {
         SQLConnection instance = new SQLConnection(LOGIN_URL,
                                           user,
                                           pass);
-        instance.selectDatabase();
-
         return instance;    
     }
 

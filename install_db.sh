@@ -12,7 +12,7 @@ echo Installing DB...
 # Link to MySQL Connector
 echo "Create mysql-connector link ? You only need do this once (Y,n)"
 read PINATA_YN
-if [ $PINATA_YN == "Y" ]
+if [ $PINATA_YN = 'Y' ]
 then
     echo Creating mysql-connector link...
     sudo ln -rs /usr/share/java/mysql.jar /usr/share/tomcat8/lib/mysql.jar
