@@ -12,6 +12,7 @@ public enum ApiStatus {
     // Client errors.
     MALFORMED_REQUEST(400, 400, "Server received malformed request."),
     JSON_DS_ERROR(401, 400, "Unable to deserialize JSON request."),
+    NOT_FOUND(404, 404, "Server resource not found."),
 
     // Server errors.
     UNKNOWN_ERROR(500, 500, "Unknown error occurred."),
