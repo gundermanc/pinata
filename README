@@ -26,10 +26,8 @@ LAYOUT:
  - android                    - Android application project. Depends on shared
                                 library for REST request code, error enums, and
                                 JSON serialization.
- - ios                        - iOS project, will focus mainly on UI aspects. If
-                                possible, most application logic will either
-                                live server side, or in the shared library,
-                                which will be cross compiled with J2ObjC.
+ - ios                        - iOS project, will focus mainly on UI aspects and
+                                minimal REST code.
 SETUP:
  - Install Gradle             - sudo apt-get install gradle
  - Install MySQL              - sudo apt-get install mysql-server[version]
@@ -38,7 +36,7 @@ SETUP:
  - Install Tomcat[7/8]        - sudo apt-get install tomcat[7/8]
 
 BUILD (service):
- - With Gradle                - gradle build
+ - Build Service              - gradle build
 
 DEPLOY (service, must be deployed before DB can be installed):
  - Application Deploy Script  - ./deploy.sh
@@ -48,5 +46,4 @@ INSTALL DATABASE:
  - Database Install Script    - ./install_db.sh
 
 BUILD/DEPLOY (android):
- Uses ant build system at the moment till we get Gradle working. Until then,
- - Install debug config       - ant installd
+ See the README in android directory.

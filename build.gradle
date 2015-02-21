@@ -5,24 +5,7 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'eclipse'
-
     repositories {
         mavenCentral()
-    }
-
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-
-    dependencies {
-        testCompile "junit:junit-dep:4.+"
-    }
-
-    test {
-        testLogging {
-            events "passed", "skipped", "failed"
-            exceptionFormat "full" // default is "short"
-        }
     }
 }
