@@ -27,9 +27,11 @@ BUILD:
  prereq, so, you have to manually build the shared library each time you
  change it, or else it goes stale.
  
- Also, you should REALLY avoid using the Ant file. It theoretically works, but
- Gradle adds dependency management and other neccessary stuff.
-
+ As for the reason for both an Ant file and Gradle: ideally we can get
+ everything to work in Gradle eventually, but for now, gradle build
+ grabs the dependencies. Ant, however, is the definitive way to install
+ to an actual device.
+ 
  - Build Shared library       -
  - Switch to Pinata root      - cd ..
  - Switch to shared project   - cd shared
@@ -39,5 +41,5 @@ BUILD:
  - Build android project      - gradle build
 
 DEPLOY:
+ - Build debug JAR            - ant debug
  - Deploy to attached device  - gradle installd
-                          OR  - ant install

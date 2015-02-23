@@ -68,6 +68,7 @@ public class User {
         OMUtil.nullCheck(birthday);
 
         // Check username length.
+        username = username.toLowerCase();
         if (username.length() > USER_MAX || username.length() < USER_MIN) {
             throw new ApiException(ApiStatus.APP_INVALID_USER_LENGTH);
         }

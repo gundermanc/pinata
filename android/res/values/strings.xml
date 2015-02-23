@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Main</string>
+    <string name="app_name">Pinata</string>
+    <string name="create_user_submit_button_text">Create User</string>
+    <string name="create_user_status_textview_text">Ready</string>
+    <string name="create_user_username_edittext_hint">Username</string>
+    <string name="create_user_password_edittext_hint">Password</string>
+    <string name="create_user_male_radiobutton_text">Male</string>
+    <string name="create_user_female_radiobutton_text">Female</string>
 </resources>

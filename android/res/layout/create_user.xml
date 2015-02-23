@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              >
+  <TextView
+      android:id="@+id/create_user_status_textview"
+      android:layout_width="match_parent" 
+      android:layout_height="wrap_content" 
+      android:text="@string/create_user_status_textview_text"
+      />
+  <EditText
+      android:id="@+id/create_user_username_edittext"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/create_user_username_edittext_hint"
+      />
+  <EditText
+      android:id="@+id/create_user_password_edittext"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/create_user_password_edittext_hint"
+      />
+  <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/create_user_gender_radiogroup"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+    <RadioButton android:id="@+id/create_user_male_radiobutton"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:text="@string/create_user_male_radiobutton_text"/>
+    <RadioButton android:id="@+id/create_user_female_radiobutton"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:text="@string/create_user_female_radiobutton_text"/>
+  </RadioGroup>
+  <DatePicker
+      android:id="@+id/create_user_birthday_datepicker"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:endYear="2100"
+      android:startYear="1900" />
+  <Button
+      android:id="@+id/create_user_submit_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/create_user_submit_button_text"
+      android:onClick="onSubmitButtonClicked"
+      />
+</LinearLayout>

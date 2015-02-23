@@ -13,6 +13,14 @@ public class ErrorApiResponse extends ApiResponse {
     private final Throwable innerException;
 
     /**
+     * Allow for empty ErrorApiResponse so we can deserialize into
+     * it client side.
+     */
+    public ErrorApiResponse() {
+        this(null, null);
+    }
+
+    /**
      * Creates a new ErrorApiResponse.
      * @param status The ApiStatus object containing the error description.
      * @param cause The exception that caused the error.

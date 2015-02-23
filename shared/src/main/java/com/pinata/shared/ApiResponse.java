@@ -8,9 +8,21 @@ import flexjson.JSON;
  */
 public class ApiResponse extends Json {
 
-    /** The status prepended to this JSON Response */
-    @JSON(include=false)
-    private final ApiStatus status;
+    /** Server Status Enum as String. */
+    @JSON(include=true, name="status")
+    public String status;
+
+    /** Server error code integer. */
+    @JSON(include=true, name="code")
+    public int code;
+
+    /** HTTP response code as integer. */
+    @JSON(include=true, name="http_code")
+    public int httpCode;
+
+    /** Status message as String. */
+    @JSON(include=true, name="message")
+    public String message;
 
     /**
      * Creates a new Response object.
@@ -18,43 +30,15 @@ public class ApiResponse extends Json {
      */
     public ApiResponse(ApiStatus status) {
         super();
-        this.status = status;
-    }
 
-    /**
-     * Flexjson serialization method.
-     * @return The String form of the application status.
-     */
-    @JSON(include=true, name="status")
-    public String getStatusJSON() {
-        return this.status.status;
-    }
+        // Accept null status.
+        if (status == null) {
+            return;
+        }
 
-    /**
-     * Flexjson serialization method.
-     * @return The error code for the current state.
-     */
-    @JSON(include=true, name="code")
-    public int getCodeJSON() {
-        return this.status.code;
-    }
-
-    /**
-     * Flexjson serialization method.
-     * @return The HTTP response code associated
-     * with current status/error.
-     */
-    @JSON(include=true, name="http_code")
-    public int getHttpCodeJSON() {
-        return this.status.httpCode;
-    }
-
-    /**
-     * Flexjson serialization method.
-     * @return The error message String.
-     */
-    @JSON(include=true, name="message")
-    public String getMessageJSON() {
-        return this.status.message;
+        this.status = status.status;
+        this.code = status.code;
+        this.httpCode = status.httpCode;
+        this.message = status.message;
     }
 }
