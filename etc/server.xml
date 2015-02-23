@@ -1,0 +1,10 @@
+# Install dependencies.
+echo "Install Java, Tomcat, Mysql, etc. ? You only need do this once (Y,n)"
+read PINATA_YN
+if [ $PINATA_YN = 'Y' ]
+then
+    echo "Installing Java, Tomcat, Mysql, etc..."
+    sudo apt-get install openjdk
+else
+    echo "Skipping mysql-connector link..."
+fi
