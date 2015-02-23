@@ -71,7 +71,7 @@ then
     sudo rm /usr/share/$PINATA_TOMCAT_VERSION/.keystore
 
     echo "Generating keystore..."
-    sudo $JAVA_HOME/bin/keytool -noprompt -storepass pinatasmash -keypass pinatasmash -genkey -alias tomcat -keystore /usr/share/$PINATA_TOMCAT_VERSION/.keystore -keyalg RSA
+    sudo keytool -noprompt -storepass pinatasmash -keypass pinatasmash -genkey -alias tomcat -keystore /usr/share/$PINATA_TOMCAT_VERSION/.keystore -keyalg RSA
 else
     echo "Skipping keystore generation..."
 fi
