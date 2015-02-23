@@ -31,6 +31,13 @@ public class UserResponse extends ApiResponse {
     public Date birthday;
 
     /**
+     * Creates uninitialized UserResponse for client side deserialization.
+     */
+    public UserResponse() {
+        this(null, null, null, null, null);
+    }
+
+    /**
      * Creates a new UserResponse object.
      * @param status The status of the operation.
      * @param user The username of the new user.
