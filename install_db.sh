@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Pinata API Database Install Script
 # (C) 2015 Christian Gunderman
