@@ -12,6 +12,8 @@ import com.pinata.shared.UserResponse;
 import com.pinata.service.datatier.SQLConnection;
 import com.pinata.service.datatier.UsersTable;
 
+import javax.mail.internet.*;
+
 /**
  * User API, used for all operations pertaining to a user and he or her
  * relations.
@@ -30,6 +32,8 @@ public class User {
     private static int PASS_MIN = 6;
     /** Maximum password length. */
     private static int PASS_MAX = 100;
+    /** Maximum email length. */
+    private static int EMAIL_MAX = 320;
     /** MALE user id. */
     private static String GENDER_MALE = "MALE";
     /** FEMALE user id. */
@@ -42,6 +46,8 @@ public class User {
     private Date joinDate;
     /** User's birthday. */
     private Date birthday;
+    /** User's email address. */
+    private String email;
 
     /**
      * Creates a new user and stores in data tier.
@@ -52,13 +58,15 @@ public class User {
      * @param gender The user's MALE or FEMALE gender String.
      * @param password The user's password.
      * @param birthday The user's birthday.
+     * @param email The user's email address.
      * @return A new User object containing the created user.
      */
     public static User create(SQLConnection sql,
                               String username,
                               String password,
                               String gender,
-                              Date birthday) throws ApiException {
+                              Date birthday,
+                              String emailStr) throws ApiException {
 
         // Null check everything:
         OMUtil.sqlCheck(sql);
@@ -66,6 +74,7 @@ public class User {
         OMUtil.nullCheck(gender);
         OMUtil.nullCheck(password);
         OMUtil.nullCheck(birthday);
+        OMUtil.nullCheck(emailStr);
 
         // Check username length.
         username = username.toLowerCase();
@@ -90,12 +99,21 @@ public class User {
             throw new ApiException(ApiStatus.APP_INVALID_BIRTHDAY);
         }
 
+        // Check for valid email and convert to internet address.
+        InternetAddress emailAddr = null;
+        try{
+            emailAddr = new InternetAddress(emailStr, /*Strict:*/ true);
+            emailAddr.validate();
+        } catch(AddressException e){
+            throw new ApiException(ApiStatus.APP_INVALID_EMAIL);
+        }
+
         // Query DB.
         Date joinDate = new Date();
         UsersTable.insertUser(sql, username, OMUtil.sha256(password),
-                              gender, joinDate, birthday);
+                              gender, joinDate, birthday, emailAddr);
 
-        return new User(username, gender, joinDate, birthday);
+        return new User(username, gender, joinDate, birthday, emailStr);
     }
 
     /**
@@ -125,7 +143,8 @@ public class User {
             return new User(result.getString("user"),
                             result.getString("gender"),
                             result.getDate("join_date"),
-                            result.getDate("birth_date"));
+                            result.getDate("birth_date"),
+                            result.getString("email"));
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
@@ -189,12 +208,21 @@ public class User {
         return this.birthday;
     }
 
+    /**
+     *Gets the user's email address.
+     @return The user's email address.
+     */
+    public String getEmail() {
+        return this.email;
+    }
+
     public UserResponse toResponse(ApiStatus status) {
         return new UserResponse(status,
                                 this.getUsername(),
                                 this.getGender(),
                                 this.getJoinDate(),
-                                this.getBirthday());
+                                this.getBirthday(),
+                                this.getEmail());
     }
 
     /**
@@ -205,10 +233,11 @@ public class User {
      * @param password The user's password.
      * @param birthday The user's birthday.
      */
-    private User(String username, String gender, Date joinDate, Date birthday) {
+    private User(String username, String gender, Date joinDate, Date birthday, String email) {
         this.username = username;
         this.gender = gender;
         this.joinDate = joinDate;
         this.birthday = birthday;
+        this.email = email;
     }
 }

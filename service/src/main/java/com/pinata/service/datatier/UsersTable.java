@@ -11,6 +11,8 @@ import java.util.Date;
 import com.pinata.shared.ApiException;
 import com.pinata.shared.ApiStatus;
 
+import javax.mail.internet.InternetAddress;
+
 /**
  * Wrapper class for SQL Users Table. Ideally there should be a 1:1 mapping
  * between SQL queries and methods in this file. Methods in this file, although
@@ -28,14 +30,15 @@ public class UsersTable {
         "  gender VARCHAR(6) NOT NULL," +
         "  join_date DATETIME NOT NULL," +
         "  birth_date DATETIME NOT NULL," +
+        "  email VARCHAR(320) NOT NULL," + //smtp email max. is 320 chars
         "  PRIMARY KEY(user)," +
         "  INDEX USING HASH(user)" +
         ")";
 
     /** Create user query. */
     private static final String INSERT_USER_QUERY =
-        "INSERT INTO Users (user, pass, gender, join_date, birth_date)" +
-        " VALUES (?,?,?,?,?)";
+        "INSERT INTO Users (user, pass, gender, join_date, birth_date, email)" +
+        " VALUES (?,?,?,?,?,?)";
 
     /** Lookup user query. */
     private static final String LOOKUP_USER_QUERY =
@@ -72,13 +75,15 @@ public class UsersTable {
      * @param gender A value up to 6 chars. Should be MALE or FEMALE.
      * @param joinDate The date that the new user joined.
      * @param birthDate The new user's birthday.
+     * @param email The new user's email address.
      */
     public static void insertUser(SQLConnection sql,
                                   String user,
                                   String pass,
                                   String gender,
                                   Date joinDate,
-                                  Date birthDate) throws ApiException {
+                                  Date birthDate,
+                                  InternetAddress email) throws ApiException {
         Connection connection = sql.connection;
 
         try {
@@ -89,6 +94,7 @@ public class UsersTable {
             insertStatement.setString(3, gender);
             insertStatement.setDate(4, new java.sql.Date(joinDate.getTime()));
             insertStatement.setDate(5, new java.sql.Date(birthDate.getTime()));
+            insertStatement.setString(6, email.getAddress());
 
             insertStatement.execute();
         } catch (SQLIntegrityConstraintViolationException ex) {

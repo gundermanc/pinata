@@ -26,6 +26,11 @@ public class CreateUserRequest extends ApiRequest {
     @JSON(include=true, name="birthday")
     public Date birthday;
 
+    /** New user's email address. */
+    @JSON(include=true, name="email")
+    public String email;
+
+
     /**
      * Creates a new CreateUserRequest with the provided field values.
      * @param user User name of the new user.
@@ -36,11 +41,13 @@ public class CreateUserRequest extends ApiRequest {
     public CreateUserRequest(String user,
                              String pass,
                              String gender,
-                             Date birthday) {
+                             Date birthday,
+                             String email) {
         this.user = user;
         this.pass = pass;
         this.gender = gender;
         this.birthday = birthday;
+        this.email = email;
     }
 
     /**

@@ -30,11 +30,15 @@ public class UserResponse extends ApiResponse {
     @JSON(include=true, name="birthday")
     public Date birthday;
 
+    /** User's email address. */
+    @JSON(include=true, name="email")
+    public String email;
+
     /**
      * Creates uninitialized UserResponse for client side deserialization.
      */
     public UserResponse() {
-        this(null, null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
     /**
@@ -49,12 +53,14 @@ public class UserResponse extends ApiResponse {
                         String user,
                         String gender,
                         Date joinDate,
-                        Date birthday) {
+                        Date birthday,
+                        String email) {
         super(status);
         this.user = user;
         this.pass = null;
         this.gender = gender;
         this.joinDate = joinDate;
         this.birthday = birthday;
+        this.email = email;
     }
 }

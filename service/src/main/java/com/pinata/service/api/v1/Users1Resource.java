@@ -57,7 +57,8 @@ public class Users1Resource {
                                request.user,
                                request.pass,
                                request.gender,
-                               request.birthday);
+                               request.birthday,
+                               request.email);
         } finally {
             sql.close();
         }
