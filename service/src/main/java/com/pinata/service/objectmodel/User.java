@@ -100,6 +100,9 @@ public class User {
         }
 
         // Check for valid email and convert to internet address.
+        if(emailStr.length > EMAIL_MAX){
+            throw new ApiException(ApiStatus.APP_INVALID_EMAIL);
+        }
         InternetAddress emailAddr = null;
         try{
             emailAddr = new InternetAddress(emailStr, /*Strict:*/ true);
