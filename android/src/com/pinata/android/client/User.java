@@ -17,6 +17,8 @@ public class User {
     private Date joinDate;
     /** User's birthday. */
     private Date birthday;
+    /** User's email address*/
+    private String email;
 
     /**
      * Attempts to make a REST call to create a new user on the server.
@@ -33,18 +35,21 @@ public class User {
                               String username,
                               String password,
                               Gender gender,
-                              Date birthday) throws ClientException {
+                              Date birthday,
+                              String email) throws ClientException {
         // Create JSON request object.
         CreateUserRequest request = new CreateUserRequest(username,
                                                           password,
                                                           gender.name(),
-                                                          birthday);
+                                                          birthday
+                                                          email);
         // Send request.
         UserResponse response
             = UsersClient.doCreateUserRequest(client, request);
 
         return new User(response.user, response.gender,
-                        response.joinDate, response.birthday);
+                        response.joinDate, response.birthday,
+                        response.email);
     }
 
     /**
@@ -55,11 +60,12 @@ public class User {
      * @param password The user's password.
      * @param birthday The user's birthday.
      */
-    private User(String username, String gender, Date joinDate, Date birthday) {
+    private User(String username, String gender, Date joinDate, Date birthday, String email) {
         this.username = username;
         this.gender = gender;
         this.joinDate = joinDate;
         this.birthday = birthday;
+        this.email = email;
     }
 
     /**

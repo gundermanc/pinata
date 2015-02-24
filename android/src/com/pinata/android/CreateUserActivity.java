@@ -36,6 +36,8 @@ public class CreateUserActivity extends Activity {
     private RadioGroup genderRadioGroup;
     /** The birthday DatePicker control. */
     private DatePicker birthdayDatePicker;
+    /** The email EditText*/
+    private EditText emailEditText;
     /** The Create button. */
     private Button submitButton;
 
@@ -60,6 +62,8 @@ public class CreateUserActivity extends Activity {
             = (RadioGroup)this.findViewById(R.id.create_user_gender_radiogroup);
         this.birthdayDatePicker
             = (DatePicker)this.findViewById(R.id.create_user_birthday_datepicker);
+         this.emailEditText
+            = (EditText)this.findViewById(R.id.create_user_email_edittext);
         this.submitButton
             = (Button)this.findViewById(R.id.create_user_submit_button);
     }
@@ -89,6 +93,8 @@ public class CreateUserActivity extends Activity {
         private int genderButtonId;
         /** The birthday for the new user. */
         private Date birthday;
+        /** The email address for the new user. */
+        private String email;
 
         /**
          * Async operation setup routine. This routine is run on the UI thread
@@ -112,6 +118,7 @@ public class CreateUserActivity extends Activity {
                                                       birthdayDatePicker.getDayOfMonth());
 
             this.birthday = new Date(calendar.getTimeInMillis());
+            this.email = emailEditText.getText().toString();
         }
 
         /**
@@ -145,7 +152,8 @@ public class CreateUserActivity extends Activity {
                         username,
                         password,
                         gender,
-                        birthday);
+                        birthday,
+                        email);
         }
 
         /**
