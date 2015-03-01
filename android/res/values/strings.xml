@@ -5,6 +5,7 @@
     <string name="create_user_status_textview_text">Ready</string>
     <string name="create_user_username_edittext_hint">Username</string>
     <string name="create_user_password_edittext_hint">Password</string>
+    <string name="create_user_email_edittext_hint">Email</string>
     <string name="create_user_male_radiobutton_text">Male</string>
     <string name="create_user_female_radiobutton_text">Female</string>
 </resources>

@@ -43,3 +43,12 @@ BUILD:
 DEPLOY:
  - Build debug JAR            - ant debug
  - Deploy to attached device  - gradle installd
+
+ERRORS:
+ - Device permissions:        - sudo adb start-server
+                              - sudo ant installd
+
+ - Certificates:              - ant clean
+                              - ant debug
+
+ - Not showing up on phone:   - sudo adb install ./Pinata.apk

@@ -3,6 +3,7 @@ package com.pinata.android;
 import android.os.AsyncTask;
 
 import com.pinata.android.client.*;
+import com.pinata.android.client.http.*;
 import com.pinata.shared.*;
 
 /**

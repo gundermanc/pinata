@@ -18,6 +18,7 @@ import android.widget.Toast;
 import android.view.View;
 
 import com.pinata.android.client.*;
+import com.pinata.android.client.http.*;
 import com.pinata.shared.*;
 
 /**

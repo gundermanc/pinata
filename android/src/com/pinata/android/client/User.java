@@ -3,6 +3,7 @@ package com.pinata.android.client;
 import java.util.Date;
 
 import com.pinata.shared.*;
+import com.pinata.android.client.http.*;
 
 /**
  * Android Client side User object.
@@ -41,7 +42,7 @@ public class User {
         CreateUserRequest request = new CreateUserRequest(username,
                                                           password,
                                                           gender.name(),
-                                                          birthday
+                                                          birthday,
                                                           email);
         // Send request.
         UserResponse response

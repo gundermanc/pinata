@@ -20,7 +20,7 @@ public abstract class UsersClient {
      * @return UserResponse The unmodified server response, deserialized
      * to a class, if successful.
      */
-    static UserResponse doCreateUserRequest(HttpClient client,
+    public static UserResponse doCreateUserRequest(HttpClient client,
                                      CreateUserRequest request)
         throws ClientException {
 
