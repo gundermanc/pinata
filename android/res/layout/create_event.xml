@@ -22,20 +22,11 @@
       android:layout_height="wrap_content"
       android:hint="@string/create_event_location_edittext_hint"
       />
-  <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/create_event_byob_radiogroup"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
-    <RadioButton android:id="@+id/create_event_yes_radiobutton"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:text="@string/create_event_yes_radiobutton_text"/>
-    <RadioButton android:id="@+id/create_event_no_radiobutton"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:text="@string/create_event_no_radiobutton_text"/>
-  </RadioGroup>
+  <CheckBox android:id="@+id/create_event_byob_checkbox"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/create_event_byob_checkbox_text"
+      />
   <DatePicker
       android:id="@+id/create_event_date_datepicker"
       android:layout_width="match_parent"

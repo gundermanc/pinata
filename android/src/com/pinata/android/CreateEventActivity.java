@@ -12,6 +12,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,8 +33,8 @@ public class CreateEventActivity extends Activity {
     private EditText eventnameEditText;
     /** The location EditText. */
     private EditText locationEditText;
-    /** The byob radiobutton group. */
-    private RadioGroup byobRadioGroup;//TODO make into checkbox
+    /** The byob checkbox. */
+    private CheckBox byobCheckBox;
     /** The datePicker control. */
     private DatePicker datePicker;
     /** The Create button. */
@@ -57,7 +58,7 @@ public class CreateEventActivity extends Activity {
         this.locationEditText
             = (EditText)this.findViewById(R.id.create_event_location_edittext);
         this.byobRadioGroup
-            = (RadioGroup)this.findViewById(R.id.create_event_byob_radiogroup);
+            = (CheckBox)this.findViewById(R.id.create_event_byob_checkbox);
         this.datePicker
             = (DatePicker)this.findViewById(R.id.create_event_date_datepicker);
         this.submitButton
@@ -85,8 +86,8 @@ public class CreateEventActivity extends Activity {
         private String eventname;
         /** The location for the new event. */
         private String location;
-        /** The ID of the selected byob button, or -1 for none. */
-        private int byob;
+        /** The value of byob, */
+        private boolean byob;
         /** The date for the new event. */
         private Date date;
 
@@ -104,8 +105,8 @@ public class CreateEventActivity extends Activity {
             // Cache any data from the UI that we need for this request.
             this.eventname = eventnameEditText.getText().toString();
             this.location = locationEditText.getText().toString();
-            this.byobButtonId
-                = byobRadioGroup.getCheckedRadioButtonId();
+            this.byob
+                = byobcheckbox.isChecked();
 
             Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                                                       datePicker.getMonth(),
@@ -129,17 +130,6 @@ public class CreateEventActivity extends Activity {
         @Override
         protected void backgroundThreadOperation(HttpClient client)
             throws ClientException {
-
-            // Check if the event has chosen a gender.
-            Event.byob byob;
-            if (byobButtonId == R.id.create_event_byob_radiobutton) {
-                gender = Event.Byob.YES;
-            } else if (genderButtonId == R.id.create_event_notbyob_radiobutton) {
-                gender = Event.Byob.NO;
-            } else {
-                throw new ClientException(ClientStatus.APP_MUST_CHOOSE_GENDER);
-            }
-
             // Create new event on server.
             Event.create(client,
                         eventname,

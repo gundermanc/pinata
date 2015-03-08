@@ -33,7 +33,7 @@ public class Event {
     /** Event's id. */
     private int eid;
     /** Event's name */
-    private Sting name;
+    private String name;
     /** Event's location */
     private String location;
     /** Event's date */
@@ -109,11 +109,11 @@ public class Event {
                 throw new ApiException(ApiStatus.APP_EVENT_NOT_EXIST);
             }
             
-            return new Event(result.getString("eid"),
+            return new Event(result.getInt("eid"),
                             result.getString("name"),
-                            result.getDate("location"),
+                            result.getString("location"),
                             result.getDate("date"),
-                            result.getString("byob"));
+                            result.getBoolean("byob"));
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
@@ -203,7 +203,7 @@ public class Event {
      * @param date The event's date.
      * @param byob The byob status of the event.
      */
-    private Event(int eid, Strig name, String location, Date date, boolean byob) {
+    private Event(int eid, String name, String location, Date date, boolean byob) {
         this.eid = eid;
         this.name = name;
         this.location = location;

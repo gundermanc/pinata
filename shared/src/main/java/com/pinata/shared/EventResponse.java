@@ -11,7 +11,7 @@ public class EventResponse extends ApiResponse {
 
     /** EventID. */
     @JSON(include=true, name="eventID")
-    public String eventID;
+    public int eventID;
 
     /** Event name */
     @JSON(include=true, name="name")
@@ -34,7 +34,7 @@ public class EventResponse extends ApiResponse {
      * Creates uninitialized EventResponse for client side deserialization.
      */
     public EventResponse() {
-        this(null, null, null, null, null);
+        this(null, -1, null, null, null, false);
     }
 
     /**

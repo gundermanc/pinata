@@ -2,6 +2,7 @@ package com.pinata.service.datatier;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -27,7 +28,7 @@ public class EventsTable {
         "  location VARCHAR(200) NOT NULL," +
         "  date DATETIME NOT NULL," +
         "  byob BOOLEAN NOT NULL," +
-        "  PRIMARY KEY(eid)"
+        "  PRIMARY KEY(eid) " +
         ")";
 
     /** Create events query. */
@@ -40,7 +41,7 @@ public class EventsTable {
         "SELECT * FROM Events WHERE eid=?";
 
     /** Delete event query. */
-    private static final String DELETE_USER_QUERY =
+    private static final String DELETE_EVENT_QUERY =
         "DELETE FROM Events WHERE eid=?";
 
     /**
@@ -79,13 +80,15 @@ public class EventsTable {
 
         try {
             PreparedStatement insertStatement
-                = connection.prepareStatement(INSERT_EVENT_QUERY);
+                = connection.prepareStatement(INSERT_EVENT_QUERY, Statement.RETURN_GENERATED_KEYS);
             insertStatement.setString(1, name);
             insertStatement.setString(2, location);
-            insertStatement.setString(3, date);
-            insertStatement.setDate(4, new java.sql.Date(date.getTime()));
+            insertStatement.setDate(3, new java.sql.Date(date.getTime()));
+            insertStatement.setBoolean(4, byob);
             insertStatement.execute();
-            return mysqli_insert_id(connection);
+            ResultSet rs = insertStatement.getGeneratedKeys();
+            rs.next();
+            return rs.getInt(1);
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
@@ -107,7 +110,7 @@ public class EventsTable {
         try {
             PreparedStatement lookupStatement =
                 connection.prepareStatement(LOOKUP_EVENT_QUERY);
-            lookupStatement.setString(1, eid);
+            lookupStatement.setInt(1, eid);
 
             return lookupStatement.executeQuery();
         } catch (SQLException ex) {
@@ -129,7 +132,7 @@ public class EventsTable {
         try {
             PreparedStatement deleteStatement =
                 connection.prepareStatement(DELETE_EVENT_QUERY);
-            deleteStatement.setString(1, eid);
+            deleteStatement.setInt(1, eid);
 
             // Execute and check that deletion was successful.
             if (deleteStatement.executeUpdate() != 1) {

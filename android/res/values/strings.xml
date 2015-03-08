@@ -13,8 +13,6 @@
     <string name="create_event_status_textview_text">Ready</string>
     <string name="create_event_eventname_edittext_hint">Event name</string>
     <string name="create_event_location_edittext_hint">location</string>
-    <string name="create_event_byob_edittext_hint">byob</string>
-    <string name="create_event_yes_radiobutton_text">yes</string>
-    <string name="create_event_no_radiobutton_text">no</string>
+    <string name="create_event_byob_checkbox_text">byob?</string>
 
 </resources>
