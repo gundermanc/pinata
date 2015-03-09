@@ -26,8 +26,8 @@ public abstract class Json {
      */
     public void deserializeFrom(String json) throws ApiException {
         try {
-            new JSONDeserializer().use(null, 
-                                       this.getClass()).deserializeInto(json, this);
+            new JSONDeserializer<Json>().use(null, 
+                this.getClass()).deserializeInto(json, this);
         } catch (JSONException ex) {
             throw new ApiException(ApiStatus.JSON_DS_ERROR, ex);
         }
