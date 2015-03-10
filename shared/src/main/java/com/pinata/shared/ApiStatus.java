@@ -12,15 +12,18 @@ public enum ApiStatus {
 
     // Client errors.
     MALFORMED_REQUEST(400, 400, "Server received malformed request."),
-    JSON_DS_ERROR(401, 400, "Unable to deserialize JSON request."),
+    INVALID_SESSION_HEADER(401, 400, "Malformed request. Invalid session header."),
+    INVALID_SESSION(402, 400, "Invalid session."),
+    JSON_DS_ERROR(403, 400, "Unable to deserialize JSON request."),
     NOT_FOUND(404, 404, "Server resource not found."),
-    INVALID_GENDER(408, 400, "Invalid gender. Gender must be MALE or FEMALE."),
+    INVALID_GENDER(405, 400, "Invalid gender. Gender must be MALE or FEMALE."),
 
     // Server errors.
     UNKNOWN_ERROR(500, 500, "Unknown error occurred."),
     DATABASE_ERROR(501, 500, "Error processing database request."),
     INSTALL_ERROR(502, 500, "Incorrect server configuration."),
     NO_SQL(503, 500, "No SQL instance provided."),
+    ACCESS_DENIED(503, 403, "Access denied."),
 
     // App logic errors.
     APP_INVALID_USER_LENGTH(701, 400, "Username is either too short or too long."),
@@ -35,7 +38,8 @@ public enum ApiStatus {
     APP_ROLE_ID_TAKEN(710, 400, "Can't add Role. Role already exists."),
     APP_USER_HAS_ROLE_DUPLICATE(711, 400, "User already has Role, or Role doesn't exist."),
     APP_USER_NOT_HAVE_ROLE(712, 400, "User does not have Role."),
-    APP_ROLE_NOT_EXIST(713, 400, "Role does not exist.");
+    APP_ROLE_NOT_EXIST(713, 400, "Role does not exist."),
+    APP_INVALID_PASSWORD(714, 403, "Invalid password.");
 
     /** The String name of the state (OK, MALFORMED_REQUEST, ...) */
     public final String status;

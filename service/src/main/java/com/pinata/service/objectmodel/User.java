@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,26 +29,28 @@ import javax.mail.internet.*;
 public class User {
 
     /** Minimum user account length. */
-    private static int USER_MIN = 6;
+    private static final int USER_MIN = 6;
     /**
      * Maximum user account length. You MUST make sure that this value is less
      * than or equal to the column width in UserTable.
      */
-    private static int USER_MAX = 25;
+    private static final int USER_MAX = 25;
     /** Password minimum length */
-    private static int PASS_MIN = 6;
+    private static final int PASS_MIN = 6;
     /** Maximum password length. */
-    private static int PASS_MAX = 100;
+    private static final int PASS_MAX = 100;
     /** Maximum email length. */
-    private static int EMAIL_MAX = 320;
+    private static final int EMAIL_MAX = 320;
     /** MALE user id. */
-    private static String GENDER_MALE = "MALE";
+    private static final String GENDER_MALE = "MALE";
     /** FEMALE user id. */
-    private static String GENDER_FEMALE = "FEMALE";
+    private static final String GENDER_FEMALE = "FEMALE";
     /** Unique User id integer. */
     private int uid;
     /** Username. */
     private String username;
+    /** Password hashes. */
+    private String passwordHash;
     /** User's gender. */
     private String gender;
     /** Date user joined. */
@@ -121,19 +124,23 @@ public class User {
             throw new ApiException(ApiStatus.APP_INVALID_EMAIL);
         }
 
+        // Hash password.
+        password = OMUtil.sha256(password);
+
         // Insert user query.
         Date joinDate = new Date();
-        int uid = UserTable.insertUser(sql, username, OMUtil.sha256(password),
+        int uid = UserTable.insertUser(sql, username, password,
                                         gender, joinDate, birthday, emailAddr);
 
         // User role query.
         // NOTE: if you remove this line of code, you will break lookup which
         // assumes every user has at least one role.
-        UserHasRoleTable.insertUserHasRoleName(sql,
-                                               uid,
-                                               UserRoleTable.ROLE_USER_ID);
+        UserHasRoleTable.insertUserHasRole(sql,
+                                           uid,
+                                           UserRoleTable.ROLE_USER_ID);
         
-        return new User(uid, username, gender, joinDate, birthday, emailStr);
+        return new User(uid, username, password, gender,
+                        joinDate, birthday, emailStr);
     }
 
     /**
@@ -162,6 +169,7 @@ public class User {
             
             User user = new User(result.getInt("uid"),
                                  result.getString("user"),
+                                 result.getString("pass"),
                                  result.getString("gender"),
                                  result.getDate("join_date"),
                                  result.getDate("birth_date"),
@@ -241,11 +249,39 @@ public class User {
     }
 
     /**
-     *Gets the user's email address.
+     * Gets the user's email address.
      * @return The user's email address.
      */
     public String getEmail() {
         return this.email;
+    }
+
+    /**
+     * Gets the user's password hash. This method is intentionally
+     * package protected to keep password hashes from leaving the objectmodel.
+     * @return The SHA256 hashed user password.
+     */
+    String getPasswordHash() {
+        return this.passwordHash;
+    }
+
+    /**
+     * Gets the user's table UID. This method is intentionally package
+     * protected.
+     * @return The user's AUTO_INCREMENT id.
+     */
+    int getUid() {
+        return this.uid;
+    }
+
+    /**
+     * Checks if two User objects refer to the same User account.
+     * @param o The object to compare.
+     * @return True if they are the same user.
+     */
+    @Override
+    public boolean equals(Object o) {
+        return ((User)o).getUid() == this.getUid();
     }
 
     /**
@@ -294,7 +330,7 @@ public class User {
 
         try {
             // Add Role to the user in the DB.
-            UserHasRoleTable.insertUserHasRoleName(sql, this.uid, role);
+            UserHasRoleTable.insertUserHasRole(sql, this.uid, role);
 
             // Query Role from DB to get the description.
             ResultSet roleResult = UserRoleTable.lookupUserRole(sql,
@@ -405,7 +441,7 @@ public class User {
             OMUtil.sqlCheck(sql);
             OMUtil.nullCheck(role);
 
-            UserRoleTable.deleteUserRoleName(sql, role);
+            UserRoleTable.deleteUserRole(sql, role);
         }
 
         /**
@@ -437,7 +473,6 @@ public class User {
             this.id = id;
             this.description = description;
         }
-
     }
 
     /**
@@ -448,10 +483,12 @@ public class User {
      * @param password The user's password.
      * @param birthday The user's birthday.
      */
-    private User(int uid, String username, String gender, Date joinDate,
+    private User(int uid, String username, String passwordHash,
+                 String gender, Date joinDate,
                  Date birthday, String email) {
         this.uid = uid;
         this.username = username;
+        this.passwordHash = passwordHash;
         this.gender = gender;
         this.joinDate = joinDate;
         this.birthday = birthday;

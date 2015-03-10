@@ -1,5 +1,7 @@
 package com.pinata.shared;
 
+import java.util.UUID;
+
 import flexjson.JSON;
 
 /**
@@ -7,5 +9,5 @@ import flexjson.JSON;
  * @author Christian Gunderman
  */
 public abstract class ApiRequest extends Json {
-    
+
 }

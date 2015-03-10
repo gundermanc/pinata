@@ -73,7 +73,7 @@ public abstract class UserHasRoleTable {
 
             // Insert user role record.
             PreparedStatement insertStatement
-                = connection.prepareStatement(INSERT_USER_HAS_ROLE_NAME_QUERY);
+                = connection.prepareStatement(INSERT_USER_HAS_ROLE_QUERY);
             insertStatement.setInt(1, uid);
             insertStatement.setString(2, roleName);
 
@@ -84,37 +84,6 @@ public abstract class UserHasRoleTable {
             return result;
         } catch (SQLIntegrityConstraintViolationException ex) {
             // User is already of given Role or Role not exist.
-            throw new ApiException(
-                ApiStatus.APP_USER_HAS_ROLE_DUPLICATE, ex);
-        } catch (SQLException ex) {
-            throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
-        }
-    }
-
-    /**
-     * Give User requested Role.
-     * @throws ApiException If database error or user already has Role, or
-     * requested Role doesn't exist.
-     * @param uid The user's unique AUTO_INCREMENT id from the table.
-     * @param rid The unique AUTO_INCREMENT id from the UserRole table.
-     * @return The ResultSet containing the Role information.
-     */
-    public static void insertUserHasRole(SQLConnection sql,
-                                         int uid,
-                                         int rid) throws ApiException {
-        Connection connection = sql.connection;
-
-        try {
-            PreparedStatement insertStatement
-                = connection.prepareStatement(INSERT_USER_HAS_ROLE_QUERY);
-            insertStatement.setInt(1, uid);
-            insertStatement.setInt(2, rid);
-
-            insertStatement.execute();
-            insertStatement.close();
-        } catch (SQLIntegrityConstraintViolationException ex) {
-            // We have no foreign or unique keys other than primary
-            // so this can only be thrown for duplicate users.
             throw new ApiException(
                 ApiStatus.APP_USER_HAS_ROLE_DUPLICATE, ex);
         } catch (SQLException ex) {

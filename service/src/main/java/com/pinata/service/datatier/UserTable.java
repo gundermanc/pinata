@@ -44,7 +44,8 @@ public abstract class UserTable {
 
     /** Lookup user query. */
     private static final String LOOKUP_USER_QUERY =
-        "SELECT * FROM User U, UserRole R, UserHasRole H WHERE U.user=? AND U.uid=H.uid AND H.rid=R.rid";
+        "SELECT * FROM User U, UserRole R, UserHasRole H WHERE U.user=? " +
+        " AND U.uid=H.uid AND H.rid=R.rid";
 
     /** Delete user query. */
     private static final String DELETE_USER_QUERY =
