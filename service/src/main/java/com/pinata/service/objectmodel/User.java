@@ -1,6 +1,10 @@
 package com.pinata.service.objectmodel;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,12 +14,14 @@ import com.pinata.shared.ApiStatus;
 import com.pinata.shared.UserResponse;
 
 import com.pinata.service.datatier.SQLConnection;
-import com.pinata.service.datatier.UsersTable;
+import com.pinata.service.datatier.UserTable;
+import com.pinata.service.datatier.UserRoleTable;
+import com.pinata.service.datatier.UserHasRoleTable;
 
 import javax.mail.internet.*;
 
 /**
- * User API, used for all operations pertaining to a user and he or her
+ * User API, used for all operations pertaining to a user and his or her
  * relations.
  * @author Christian Gunderman
  */
@@ -38,6 +44,8 @@ public class User {
     private static String GENDER_MALE = "MALE";
     /** FEMALE user id. */
     private static String GENDER_FEMALE = "FEMALE";
+    /** Unique User id integer. */
+    private int uid;
     /** Username. */
     private String username;
     /** User's gender. */
@@ -48,6 +56,8 @@ public class User {
     private Date birthday;
     /** User's email address. */
     private String email;
+    /** User's security roles. */
+    private Set<Role> roles;
 
     /**
      * Creates a new user and stores in data tier.
@@ -100,7 +110,7 @@ public class User {
         }
 
         // Check for valid email and convert to internet address.
-        if(emailStr.length() > EMAIL_MAX){
+        if(emailStr.length() > EMAIL_MAX) {
             throw new ApiException(ApiStatus.APP_INVALID_EMAIL);
         }
         InternetAddress emailAddr = null;
@@ -111,12 +121,19 @@ public class User {
             throw new ApiException(ApiStatus.APP_INVALID_EMAIL);
         }
 
-        // Query DB.
+        // Insert user query.
         Date joinDate = new Date();
-        UsersTable.insertUser(sql, username, OMUtil.sha256(password),
-                              gender, joinDate, birthday, emailAddr);
+        int uid = UserTable.insertUser(sql, username, OMUtil.sha256(password),
+                                        gender, joinDate, birthday, emailAddr);
 
-        return new User(username, gender, joinDate, birthday, emailStr);
+        // User role query.
+        // NOTE: if you remove this line of code, you will break lookup which
+        // assumes every user has at least one role.
+        UserHasRoleTable.insertUserHasRoleName(sql,
+                                               uid,
+                                               UserRoleTable.ROLE_USER_ID);
+        
+        return new User(uid, username, gender, joinDate, birthday, emailStr);
     }
 
     /**
@@ -134,7 +151,7 @@ public class User {
         OMUtil.sqlCheck(sql);
         OMUtil.nullCheck(username);
 
-        ResultSet result = UsersTable.lookupUser(sql, username);
+        ResultSet result = UserTable.lookupUserWithRoles(sql, username);
 
         // Build User object.
         try {
@@ -143,11 +160,23 @@ public class User {
                 throw new ApiException(ApiStatus.APP_USER_NOT_EXIST);
             }
             
-            return new User(result.getString("user"),
-                            result.getString("gender"),
-                            result.getDate("join_date"),
-                            result.getDate("birth_date"),
-                            result.getString("email"));
+            User user = new User(result.getInt("uid"),
+                                 result.getString("user"),
+                                 result.getString("gender"),
+                                 result.getDate("join_date"),
+                                 result.getDate("birth_date"),
+                                 result.getString("email"));
+
+            // Populate user roles.
+            // NOTE: this implementation assumes that every user is AT LEAST
+            // one role.
+            do {
+                user.roles.add(new Role(result.getString("role"),
+                                        result.getString("description")));
+            } while(result.next());
+
+            result.close();
+            return user;
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
@@ -167,7 +196,7 @@ public class User {
         OMUtil.nullCheck(username);
 
         // Try to delete
-        UsersTable.deleteUser(sql, username);
+        UserTable.deleteUser(sql, username);
     }
 
     /**
@@ -213,12 +242,18 @@ public class User {
 
     /**
      *Gets the user's email address.
-     @return The user's email address.
+     * @return The user's email address.
      */
     public String getEmail() {
         return this.email;
     }
 
+    /**
+     * Reformats the User as a JsonSerializable UserResponse
+     * object.
+     * @param status The ApiStatus representing the success/failure.
+     * @return JsonSerializable Object.
+     */
     public UserResponse toResponse(ApiStatus status) {
         return new UserResponse(status,
                                 this.getUsername(),
@@ -229,6 +264,183 @@ public class User {
     }
 
     /**
+     * Gets the security roles that this user is authorized for.
+     * @return An unmodifiable collection of Roles.
+     */
+    public Collection<Role> getRoles() {
+        return Collections.unmodifiableCollection(this.roles);
+    }
+
+    /**
+     * Checks to see if this user is of the specified Role.
+     * @return True if this user is the specified role.
+     */
+    public boolean isRole(String role) {
+        return this.roles.contains(new Role(role, null));
+    }
+
+    /**
+     * Grants this user the specified role.
+     * @throws ApiException If database error occurs or Role doesn't exist
+     * or User already has given Role.
+     * @param sql The SQLConnection.
+     * @param role A unique role id string.
+     * @return The Role object that was added to the User's Roles.
+     */
+    public Role addRole(SQLConnection sql, String role) throws ApiException {
+        // Clean inputs.
+        OMUtil.sqlCheck(sql);
+        OMUtil.nullCheck(role);
+
+        try {
+            // Add Role to the user in the DB.
+            UserHasRoleTable.insertUserHasRoleName(sql, this.uid, role);
+
+            // Query Role from DB to get the description.
+            ResultSet roleResult = UserRoleTable.lookupUserRole(sql,
+                                                                role);
+
+            // Check that results were returned.
+            // This should be redundant, but good to have just in case.
+            if (!roleResult.next()) {
+                throw new ApiException(ApiStatus.APP_USER_HAS_ROLE_DUPLICATE);
+            }
+
+            // Create a wrapper object.
+            Role newRole = new Role(roleResult.getString("role"),
+                                    roleResult.getString("description"));
+
+            // Add wrapper object to Roles set for user.
+            this.roles.add(newRole);
+
+            return newRole;
+        } catch (SQLException ex) {
+            throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
+        }
+    }
+
+    /**
+     * Removes a user's security Role.
+     * @throws ApiException If user doesn't have the requested Role.
+     * @param role The unique ROLE_[name] id.
+     */
+    public void removeRole(SQLConnection sql, String role) throws ApiException {
+
+        // Clean inputs.
+        OMUtil.sqlCheck(sql);
+        OMUtil.nullCheck(role);
+
+        // Remove Role from the Role set.
+        Role roleToRemove = new Role(role, null);
+
+        // Check if we have this Role first.
+        if (!this.roles.contains(roleToRemove)) {
+            throw new ApiException(ApiStatus.APP_USER_NOT_HAVE_ROLE);
+        }
+
+        // Remove Role from user in database.
+        UserHasRoleTable.deleteUserHasRole(sql, this.uid, role);
+    }
+
+    /**
+     * A Security Role. 
+     * Get a user's Roles with getRoles() or isRole().
+     * @author Christian Gunderman
+     */
+    public static class Role {
+        /** Minimum length for a Role id. */
+        private static int  ROLE_MIN = 7;
+        /** Maximum length for a Role id. */
+        private static int ROLE_MAX = 25;
+        /** Beginning of all ROLE ids. */
+        private static String ROLE_PREFIX = "ROLE_";
+        /** The unique role id. */
+        public final String id;
+        /** The role description message. */
+        public final String description;
+
+        /**
+         * Creates a new Role and stores in the database.
+         * @throws ApiException If database error occurs or a role with
+         * the given id already exists.
+         * @param role The unique role id string ROLE_[name] with [name] at
+         * least 2 characters, no more than 20.
+         * @param description The 255 character description of the role.
+         * @return The created Role.
+         */
+        public static Role create(SQLConnection sql,
+                                  String role,
+                                  String description) throws ApiException {
+
+            // Clean inputs.
+            OMUtil.sqlCheck(sql);
+            OMUtil.nullCheck(role);
+            OMUtil.nullCheck(description);
+
+            // Check Role string length.
+            if (role.length() < ROLE_MIN || role.length() > ROLE_MAX) {
+                throw new ApiException(ApiStatus.APP_INVALID_ROLE_LENGTH);
+            }
+
+            // Check Role prefix.
+            if (!role.startsWith(ROLE_PREFIX)) {
+                throw new ApiException(ApiStatus.APP_INVALID_ROLE);
+            }
+
+            // Create Role in database.
+            UserRoleTable.insertUserRole(sql, role, description);
+
+            return new Role(role, description);
+        }
+
+        /**
+         * Deletes the Role identified by the given Role id.
+         * @throws ApiException If database error or the Role doesn't exist.
+         * @param sql The connection to the SQL database.
+         * @param Unique Role id ROLE_[name].
+         */
+        public static void delete(SQLConnection sql,
+                                  String role) throws ApiException {
+            // Clean inputs.
+            OMUtil.sqlCheck(sql);
+            OMUtil.nullCheck(role);
+
+            UserRoleTable.deleteUserRoleName(sql, role);
+        }
+
+        /**
+         * Checks to see if this role is equalivalent to another based upon
+         * their id.
+         * @return True if the same role, false otherwise.
+         */
+        @Override
+        public boolean equals(Object o) {
+            return this.id.equals(((Role)o).id);
+        }
+
+        /**
+         * Hashes the Role based upon its id.
+         * @return A semi-unique hash integer.
+         */
+        @Override
+        public int hashCode() {
+            return this.id.hashCode();
+        }
+
+        /**
+         * Creates a new Role object. Only used inside of User class. No public
+         * construction.
+         * @param id The unique role id.
+         * @param description The role description string.
+         */
+        private Role(String id, String description) {
+            this.id = id;
+            this.description = description;
+        }
+
+    }
+
+    /**
      * Creates a new User OM object. Constructor is private because User
      * objects can only be created internally from data tier or calls to create().
      * @param username The user's username.
@@ -236,11 +448,14 @@ public class User {
      * @param password The user's password.
      * @param birthday The user's birthday.
      */
-    private User(String username, String gender, Date joinDate, Date birthday, String email) {
+    private User(int uid, String username, String gender, Date joinDate,
+                 Date birthday, String email) {
+        this.uid = uid;
         this.username = username;
         this.gender = gender;
         this.joinDate = joinDate;
         this.birthday = birthday;
         this.email = email;
+        this.roles = new HashSet<Role>();
     }
 }

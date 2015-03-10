@@ -27,8 +27,15 @@ public enum ApiStatus {
     APP_INVALID_PASS_LENGTH(702, 400, "Password is either too short or too long."),
     APP_INVALID_BIRTHDAY(703, 400, "Birthday is in the future."),
     APP_USERNAME_TAKEN(704, 400, "A user with this name already exists."),
-    APP_USER_NOT_EXIST(704, 400, "The requested user does not exist."),
-    APP_INVALID_EMAIL(705, 400, "Email address is invalid.");
+    APP_USER_NOT_EXIST(705, 400, "The requested user does not exist."),
+    APP_INVALID_EMAIL(706, 400, "Email address is invalid."),
+    APP_INVALID_ROLE_LENGTH(707, 400, "Invalid Role ID length."),
+    APP_INVALID_ROLE(708, 400, "Invalid Role ID. Must start with ROLE_"),
+    APP_INVALID_ROLE_DESCRIPTION_LENGTH(709, 400, "Invalid Role description length."),
+    APP_ROLE_ID_TAKEN(710, 400, "Can't add Role. Role already exists."),
+    APP_USER_HAS_ROLE_DUPLICATE(711, 400, "User already has Role, or Role doesn't exist."),
+    APP_USER_NOT_HAVE_ROLE(712, 400, "User does not have Role."),
+    APP_ROLE_NOT_EXIST(713, 400, "Role does not exist.");
 
     /** The String name of the state (OK, MALFORMED_REQUEST, ...) */
     public final String status;

@@ -129,7 +129,9 @@ public class SQLConnection  {
             connection.prepareStatement(CREATE_USER_QUERY).execute();
             
             // Create Tables.
-            UsersTable.create(sql);
+            UserRoleTable.create(sql);
+            UserTable.create(sql);
+            UserHasRoleTable.create(sql);
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
