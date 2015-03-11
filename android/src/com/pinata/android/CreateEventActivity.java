@@ -57,7 +57,7 @@ public class CreateEventActivity extends Activity {
             = (EditText)this.findViewById(R.id.create_event_eventname_edittext);
         this.locationEditText
             = (EditText)this.findViewById(R.id.create_event_location_edittext);
-        this.byobRadioGroup
+        this.byobCheckBox
             = (CheckBox)this.findViewById(R.id.create_event_byob_checkbox);
         this.datePicker
             = (DatePicker)this.findViewById(R.id.create_event_date_datepicker);
@@ -106,7 +106,7 @@ public class CreateEventActivity extends Activity {
             this.eventname = eventnameEditText.getText().toString();
             this.location = locationEditText.getText().toString();
             this.byob
-                = byobcheckbox.isChecked();
+                = byobCheckBox.isChecked();
 
             Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                                                       datePicker.getMonth(),

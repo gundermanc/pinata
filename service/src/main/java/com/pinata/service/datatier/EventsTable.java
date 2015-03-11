@@ -53,7 +53,6 @@ public class EventsTable {
             Connection connection = sql.connection;
             PreparedStatement createStatement
                 = connection.prepareStatement(CREATE_TABLE_QUERY);
-
             createStatement.execute();
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
@@ -86,6 +85,7 @@ public class EventsTable {
             insertStatement.setDate(3, new java.sql.Date(date.getTime()));
             insertStatement.setBoolean(4, byob);
             insertStatement.execute();
+            //return the id of the new event
             ResultSet rs = insertStatement.getGeneratedKeys();
             rs.next();
             return rs.getInt(1);

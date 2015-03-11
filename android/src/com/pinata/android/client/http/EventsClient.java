@@ -25,7 +25,7 @@ public abstract class EventsClient {
 
         EventResponse eventResponse = new EventResponse();
         client.doRequest(HttpClient.Verb.POST,
-                         RESOURCE_USERS,
+                         RESOURCE_EVENTS,
                          null,
                          request,
                          eventResponse);

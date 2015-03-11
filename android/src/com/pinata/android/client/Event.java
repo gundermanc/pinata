@@ -39,14 +39,13 @@ public class Event {
         // Create JSON request object.
         CreateEventRequest request = new CreateEventRequest(eventname,
                                                           location,
-                                                          date,
-                                                          byob);
+                                                          byob,
+                                                          date);
         // Send request.
         EventResponse response
             = EventsClient.doCreateEventRequest(client, request);
 
-        return new Event(response.ID, response.eventname, response.location,
-                        response.date, response.byob);
+        return new Event(response.eventID, response.name, response.location, response.date, response.byob);
     }
 
     /**
