@@ -70,7 +70,7 @@ public class Event {
             throw new ApiException(ApiStatus.APP_INVALID_EVENT_NAME_LENGTH);
         }
 
-        // Check password length.
+        // Check location length.
         if (location.length() > LOC_MAX || location.length() < LOC_MIN) {
             throw new ApiException(ApiStatus.APP_INVALID_EVENT_LOC_LENGTH);
         }
