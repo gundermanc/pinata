@@ -6,7 +6,6 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.os.Bundle;
-
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -16,28 +15,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
 import android.view.Window;
+import android.util.Log;
 
 import com.pinata.android.client.*;
 import com.pinata.android.client.http.*;
 import com.pinata.shared.*;
 
 /**
- * CreateUserActivity UI Handling Routines.
+ * ProfileActivity UI Handling Routines.
  * @author Christian Gunderman
  */
-public class CreateUserActivity extends Activity {
-    /** The username EditText. */
-    private EditText usernameEditText;
-    /** The password EditText. */
-    private EditText passwordEditText;
-    /** The gender radiobutton group. */
-    private RadioGroup genderRadioGroup;
-    /** The birthday DatePicker control. */
-    private DatePicker birthdayDatePicker;
-    /** The email EditText*/
-    private EditText emailEditText;
-    /** The Create button. */
-    private Button submitButton;
+public class ProfileActivity extends Activity {
+
+    /** Authentication session. */
+    private UserSession session;
 
     /**
      * Called by Android OS when activity is first started.
@@ -50,50 +41,31 @@ public class CreateUserActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         // Load window XML layout.
-        setContentView(R.layout.create_user);
+        setContentView(R.layout.profile);
 
-        // Find view buttons and save references to convenient fields.
-        this.usernameEditText
-            = (EditText)this.findViewById(R.id.create_user_username_edittext);
-        this.passwordEditText
-            = (EditText)this.findViewById(R.id.create_user_password_edittext);
-        this.genderRadioGroup
-            = (RadioGroup)this.findViewById(R.id.create_user_gender_radiogroup);
-        this.birthdayDatePicker
-            = (DatePicker)this.findViewById(R.id.create_user_birthday_datepicker);
-         this.emailEditText
-            = (EditText)this.findViewById(R.id.create_user_email_edittext);
-        this.submitButton
-            = (Button)this.findViewById(R.id.create_user_submit_button);
+        // Unpack session, if there is one.
+        try {
+            this.session = UserSession.unbundleFromIntent(this.getIntent());
+        } catch (ClientException ex) {
+            Log.wtf("ProfileActivity",
+                    "Malformed or not provided sessionHeader.");
+            this.finish();
+        }
     }
 
     /**
-     * Called when the submit button is clicked. Makes async server call to
-     * create a new user.
-     * @param The view that was clicked, the submit button.
+     * Logs out the current user and closes the window.
      */
-    public void onSubmitButtonClicked(View view) {
-        new AsyncCreateUserRequest().execute();
+    public void onLogoutButtonClicked(View view) {
+        new AsyncDeleteSessionRequest().execute();
     }
 
     /**
-     * Defines an async CreateUser operation that grabs data from the UI
-     * widgets, tells the server to make a new user, and then gives UI
-     * feedback.
+     * Defines an async DeleteSession operation that tells the server
+     * to log out of the session and then updates the UI.
      * @author Christian Gunderman
      */
-    private class AsyncCreateUserRequest extends AsyncClientOperation {
-
-        /** The username of the user to create. */
-        private String username;
-        /** The password for the new user. */
-        private String password;
-        /** The ID of the selected gender button, or -1 for none. */
-        private int genderButtonId;
-        /** The birthday for the new user. */
-        private Date birthday;
-        /** The email address for the new user. */
-        private String email;
+    private class AsyncDeleteSessionRequest extends AsyncClientOperation {
 
         /**
          * Async operation setup routine. This routine is run on the UI thread
@@ -104,19 +76,6 @@ public class CreateUserActivity extends Activity {
         @Override
         protected void uiThreadBefore() {
             // TODO: start wait cursor animation.
-
-            // Cache any data from the UI that we need for this request.
-            this.username = usernameEditText.getText().toString();
-            this.password = passwordEditText.getText().toString();
-            this.genderButtonId
-                = genderRadioGroup.getCheckedRadioButtonId();
-
-            Calendar calendar = new GregorianCalendar(birthdayDatePicker.getYear(),
-                                                      birthdayDatePicker.getMonth(),
-                                                      birthdayDatePicker.getDayOfMonth());
-
-            this.birthday = new Date(calendar.getTimeInMillis());
-            this.email = emailEditText.getText().toString();
         }
 
         /**
@@ -135,23 +94,14 @@ public class CreateUserActivity extends Activity {
         protected void backgroundThreadOperation(HttpClient client)
             throws ClientException {
 
-            // Check if the user has chosen a gender.
-            User.Gender gender;
-            if (genderButtonId == R.id.create_user_male_radiobutton) {
-                gender = User.Gender.MALE;
-            } else if (genderButtonId == R.id.create_user_female_radiobutton) {
-                gender = User.Gender.FEMALE;
-            } else {
-                throw new ClientException(ClientStatus.APP_MUST_CHOOSE_GENDER);
-            }
+            // Let client know that we are logged in.
+            client.setUserSession(session);
 
-            // Create new user on server.
-            User.create(client,
-                        username,
-                        password,
-                        gender,
-                        birthday,
-                        email);
+            // Log us out.
+            session.end(client);
+
+            // Close window.
+            finish();
         }
 
         /**
@@ -161,9 +111,7 @@ public class CreateUserActivity extends Activity {
          */
         @Override
         protected void uiThreadOperationCancelled() {
-            Toast.makeText(CreateUserActivity.this,
-                           ClientStatus.APP_CANCELLED.message,
-                           Toast.LENGTH_SHORT).show();
+
         }
 
         /**
@@ -175,9 +123,7 @@ public class CreateUserActivity extends Activity {
          */
         @Override
         protected void uiThreadAfterSuccess() {
-            Toast.makeText(CreateUserActivity.this,
-                           ClientStatus.OK.message,
-                           Toast.LENGTH_SHORT).show();
+
         }
 
         /**
@@ -198,7 +144,17 @@ public class CreateUserActivity extends Activity {
         protected void uiThreadAfterFailure(String message,
                                             ClientStatus clientStatus,
                                             ApiStatus apiStatus) {
-            Toast.makeText(CreateUserActivity.this,
+
+            // Check to see if we were already logged out server side.
+            if (clientStatus == ClientStatus.API_ERROR &&
+                apiStatus == ApiStatus.ACCESS_DENIED) {
+
+                // Close window.
+                finish();
+            }
+
+            // Display error message.
+            Toast.makeText(ProfileActivity.this,
                            message,
                            Toast.LENGTH_SHORT).show();
         }

@@ -10,10 +10,14 @@ public enum ClientStatus {
 
     // App Errors.
     APP_CANCELLED(300, "Cancelled."),
-    APP_MUST_CHOOSE_GENDER(301, "You must first choose a gender."),
+    APP_WAITING(301, "Waiting..."),
+    APP_MUST_CHOOSE_GENDER(302, "You must first choose a gender."),
+    APP_MUST_ENTER_USERNAME_PASSWORD(303, "You must enter a username and password."),
 
     // HTTP Client Errors.
     HTTP_UNKNOWN_ERROR(400, "Unknown error. Unable to reach server."),
+    HTTP_MALFORMED_RESPONSE(401, "Server returned garbled response."),
+    HTTP_INVALID_SESSION(402, "Invalid session. Please log in again."),
 
     // HTTP Server API Errors.
     API_ERROR(500, "Server error.");

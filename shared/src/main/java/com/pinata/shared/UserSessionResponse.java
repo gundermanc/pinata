@@ -31,11 +31,11 @@ public class UserSessionResponse extends ApiResponse {
      * @param birthday The birthday of the new user.
      */
     public UserSessionResponse(ApiStatus status,
-                                     String user,
-                                     UUID sessionId) {
+                               String user,
+                               UUID sessionId) {
         super(status);
         this.user = user;
-        this.sessionId = sessionId.toString();
+        this.sessionId = sessionId != null ? sessionId.toString() : null;
     }
 
     /**

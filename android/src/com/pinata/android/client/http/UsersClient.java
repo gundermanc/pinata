@@ -21,7 +21,7 @@ public abstract class UsersClient {
      * to a class, if successful.
      */
     public static UserResponse doCreateUserRequest(HttpClient client,
-                                     CreateUserRequest request)
+                                                   CreateUserRequest request)
         throws ClientException {
 
         UserResponse userResponse = new UserResponse();
@@ -33,4 +33,26 @@ public abstract class UsersClient {
 
         return userResponse;
     }
+
+    /**
+     * Performs HTTP DELETE on Users resource to the delete the specified user.
+     * Only ROLE_ADMIN users and the user themself can delete a user.
+     * @param client The HttpClient.
+     * @param username The user to delete.
+     */
+    public static UserResponse doDeleteUserRequest(HttpClient client,
+                                                   String username)
+        throws ClientException {
+
+        UserResponse userResponse = new UserResponse();
+        String path = String.format("%s/%s",
+                                    RESOURCE_USERS,
+                                    username);
+
+        client.doRequest(HttpClient.Verb.DELETE,
+                         path, null, null, userResponse);
+
+        return userResponse;
+    }
+                                                   
 }
