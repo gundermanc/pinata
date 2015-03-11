@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TimePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -37,6 +38,8 @@ public class CreateEventActivity extends Activity {
     private CheckBox byobCheckBox;
     /** The datePicker control. */
     private DatePicker datePicker;
+    /** The timepicker control. */
+    private TimePicker timePicker;
     /** The Create button. */
     private Button submitButton;
 
@@ -61,6 +64,8 @@ public class CreateEventActivity extends Activity {
             = (CheckBox)this.findViewById(R.id.create_event_byob_checkbox);
         this.datePicker
             = (DatePicker)this.findViewById(R.id.create_event_date_datepicker);
+        this.timePicker
+            = (TimePicker)this.findViewById(R.id.create_event_date_timepicker);
         this.submitButton
             = (Button)this.findViewById(R.id.create_event_submit_button);
     }
@@ -108,9 +113,10 @@ public class CreateEventActivity extends Activity {
             this.byob
                 = byobCheckBox.isChecked();
 
-            Calendar calendar = new GregorianCalendar(datePicker.getYear(),
-                                                      datePicker.getMonth(),
-                                                      datePicker.getDayOfMonth());
+            Calendar calendar = new GregorianCalendar(
+                    datePicker.getYear(),                                                      datePicker.getMonth(),                                                     datePicker.getDayOfMonth(),
+                    timePicker.getCurrentHour(),
+                    timePicker.getCurrentMinute());
 
             this.date = new Date(calendar.getTimeInMillis());
         }
