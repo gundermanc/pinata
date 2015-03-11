@@ -40,7 +40,7 @@ public class OMUtil {
      * @Param str The string to check.
      * @return true if there are invalid characters in the string.
      */
-    public static boolean invalidChars(String str) throws ApiException {
+    public static boolean invalidChars(String str) {
         if(!str.matches("^[a-zA-Z0-9_]*$")){
             return true;
         }
