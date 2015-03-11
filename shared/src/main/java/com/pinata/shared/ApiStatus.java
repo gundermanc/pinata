@@ -28,7 +28,9 @@ public enum ApiStatus {
     APP_INVALID_BIRTHDAY(703, 400, "Birthday is in the future."),
     APP_USERNAME_TAKEN(704, 400, "A user with this name already exists."),
     APP_USER_NOT_EXIST(704, 400, "The requested user does not exist."),
-    APP_INVALID_EMAIL(705, 400, "Email address is invalid.");
+    APP_INVALID_EMAIL(705, 400, "Email address is invalid."),
+    APP_INVALID_USERNAME(706, 400, "Username contains invalid character(s)."),
+    APP_INVALID_PASSWORD(707, 400, "Password cannot contain spaces.");
 
     /** The String name of the state (OK, MALFORMED_REQUEST, ...) */
     public final String status;

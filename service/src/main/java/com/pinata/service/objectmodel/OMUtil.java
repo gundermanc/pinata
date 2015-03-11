@@ -33,6 +33,19 @@ public class OMUtil {
             throw new ApiException(ApiStatus.MALFORMED_REQUEST);
         }
     }
+    
+    /**
+     * Checks the string for any unaccepted characters.
+     * Allowed: a-z, A-Z, 0-9, _
+     * @Param str The string to check.
+     * @return true if there are invalid characters in the string.
+     */
+    public static boolean invalidChars(String str) throws ApiException {
+        if(!str.matches("^[a-zA-Z0-9_]*$")){
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Gets sha256 hash of a string. Useful for password storage.

@@ -81,10 +81,18 @@ public class User {
         if (username.length() > USER_MAX || username.length() < USER_MIN) {
             throw new ApiException(ApiStatus.APP_INVALID_USER_LENGTH);
         }
+        // Check username characters.
+        if(OMUtil.invalidChars(username)){
+            throw new ApiException(ApiStatus.APP_INVALID_USERNAME);
+        }
 
         // Check password length.
         if (password.length() > PASS_MAX || password.length() < PASS_MIN) {
             throw new ApiException(ApiStatus.APP_INVALID_PASS_LENGTH);
+        }
+        // Check for spaces
+        if(password.contains(" ")){
+            throw new ApiException(ApiStatus.APP_INVALID_PASSWORD);
         }
 
         // Check gender for proper values.
