@@ -30,14 +30,27 @@ public class HttpClient {
     /** Domain name of the server to connect to. */
     private static final String HOSTNAME = "gundersonofboss.case.edu:8080";
 
+    /** The Pinata Session Http Header. */
+    private static final String SESSION_HEADER = "Pinata-Session";
+
     /** The HTTP client object backing this. */
     private final AndroidHttpClient httpClient;
+    /** The Authenticated Session. */
+    private UserSession session;
 
     /**
      * Constructs an HTTP client.
      */
     public HttpClient() {
         this.httpClient = AndroidHttpClient.newInstance(USER_AGENT);
+    }
+
+    /**
+     * Sets this HttpClient's user session.
+     * @param UserSession Returned by a call to UserSession.start().
+     */
+    public void setUserSession(UserSession session) {
+        this.session = session;
     }
 
     /**
@@ -76,7 +89,7 @@ public class HttpClient {
         }
 
         HttpRequestBase httpRequest
-            = HttpClient.buildRequest(endpointURI, request, verb);
+            = this.buildRequest(endpointURI, request, verb);
  
         return executeRequest(httpRequest, response);
     }
@@ -87,9 +100,9 @@ public class HttpClient {
      * @param request The unserialized JSON request object.
      * @param verb The HTTP verb to place in our request.
      */
-    private static HttpRequestBase buildRequest(URI endpointURI,
-                                                ApiRequest request,
-                                                Verb verb)
+    private HttpRequestBase buildRequest(URI endpointURI,
+                                         ApiRequest request,
+                                         Verb verb)
         throws ClientException {
         HttpRequestBase httpRequest = null;
 
@@ -114,9 +127,11 @@ public class HttpClient {
         }
 
         // Insert JSON Data.
-        if (verb == Verb.POST ||
-            verb == Verb.PUT ||
-            verb == Verb.PATCH) {
+        if (request != null &&
+            (verb == Verb.POST ||
+             verb == Verb.PUT ||
+             verb == Verb.PATCH || 
+             verb == Verb.DELETE)) {
             HttpEntityEnclosingRequestBase enclosingRequest
                 = (HttpEntityEnclosingRequestBase)httpRequest;
             enclosingRequest.setHeader(HTTP.CONTENT_TYPE, "application/json");
@@ -126,6 +141,12 @@ public class HttpClient {
             } catch (UnsupportedEncodingException ex) {
                 throw new ClientException(ClientStatus.HTTP_UNKNOWN_ERROR, ex);
             }
+        }
+
+        // Insert session header.
+        if (this.session != null) {
+            httpRequest.addHeader(SESSION_HEADER,
+                                  this.session.toSessionHeader());
         }
 
         return httpRequest;

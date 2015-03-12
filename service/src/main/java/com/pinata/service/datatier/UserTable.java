@@ -20,33 +20,36 @@ import javax.mail.internet.InternetAddress;
  * checking is done in User.java in objectmodel.
  * @author Christian Gunderman
  */
-public class UsersTable {
+public abstract class UserTable {
 
     /** Creates this table. */
     private static final String CREATE_TABLE_QUERY =
-        "CREATE TABLE Users(" +
+        "CREATE TABLE User(" +
+        "  uid MEDIUMINT AUTO_INCREMENT," +
         "  user VARCHAR(25) NOT NULL," +
         "  pass VARCHAR(64) NOT NULL," +
         "  gender VARCHAR(6) NOT NULL," +
         "  join_date DATETIME NOT NULL," +
         "  birth_date DATETIME NOT NULL," +
         "  email VARCHAR(320) NOT NULL," + //smtp email max. is 320 chars
-        "  PRIMARY KEY(user)," +
+        "  PRIMARY KEY(uid)," +
+        "  UNIQUE (user)," +
         "  INDEX USING HASH(user)" +
         ")";
 
     /** Create user query. */
     private static final String INSERT_USER_QUERY =
-        "INSERT INTO Users (user, pass, gender, join_date, birth_date, email)" +
+        "INSERT INTO User (user, pass, gender, join_date, birth_date, email)" +
         " VALUES (?,?,?,?,?,?)";
 
     /** Lookup user query. */
     private static final String LOOKUP_USER_QUERY =
-        "SELECT * FROM Users WHERE user=?";
+        "SELECT * FROM User U, UserRole R, UserHasRole H WHERE U.user=? " +
+        " AND U.uid=H.uid AND H.rid=R.rid";
 
     /** Delete user query. */
     private static final String DELETE_USER_QUERY =
-        "DELETE FROM Users WHERE user=?";
+        "DELETE FROM User WHERE user=?";
 
     /**
      * Creates this table, failing if it already exists.
@@ -59,6 +62,7 @@ public class UsersTable {
                 = connection.prepareStatement(CREATE_TABLE_QUERY);
 
             createStatement.execute();
+            createStatement.close();
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
@@ -76,14 +80,15 @@ public class UsersTable {
      * @param joinDate The date that the new user joined.
      * @param birthDate The new user's birthday.
      * @param email The new user's email address.
+     * @return The uid of the new user.
      */
-    public static void insertUser(SQLConnection sql,
-                                  String user,
-                                  String pass,
-                                  String gender,
-                                  Date joinDate,
-                                  Date birthDate,
-                                  InternetAddress email) throws ApiException {
+    public static int insertUser(SQLConnection sql,
+                                 String user,
+                                 String pass,
+                                 String gender,
+                                 Date joinDate,
+                                 Date birthDate,
+                                 InternetAddress email) throws ApiException {
         Connection connection = sql.connection;
 
         try {
@@ -97,6 +102,16 @@ public class UsersTable {
             insertStatement.setString(6, email.getAddress());
 
             insertStatement.execute();
+
+            // Get autoincrement row id.
+            ResultSet result = insertStatement.getGeneratedKeys();
+            result.next();
+
+            int uid = result.getInt(1);
+            
+            insertStatement.close();
+
+            return uid;
         } catch (SQLIntegrityConstraintViolationException ex) {
             // We have no foreign or unique keys other than primary
             // so this can only be thrown for duplicate users.
@@ -107,14 +122,15 @@ public class UsersTable {
     }
 
     /**
-     * Looks up a user in the database and returns the associated ResultSet.
+     * Looks up a user in the database and returns the associated ResultSet with
+     * with additional rows for each security UserRole the user has.
      * @throws ApiException If a SQL error occurs.
      * @param sql The database connection.
      * @param user The user to look up.
      * @return user A ResultSet containing the user. Should contain only a
      * single row.
      */
-    public static ResultSet lookupUser(SQLConnection sql, String user)
+    public static ResultSet lookupUserWithRoles(SQLConnection sql, String user)
         throws ApiException {
 
         Connection connection = sql.connection;
@@ -148,8 +164,11 @@ public class UsersTable {
 
             // Execute and check that deletion was successful.
             if (deleteStatement.executeUpdate() != 1) {
+                deleteStatement.close();
                 throw new ApiException(ApiStatus.APP_USER_NOT_EXIST);
             }
+
+            deleteStatement.close();
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }

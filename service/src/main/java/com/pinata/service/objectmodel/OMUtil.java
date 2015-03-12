@@ -48,6 +48,22 @@ public class OMUtil {
     }
 
     /**
+     * Checks to make sure current User is resource owner or an
+     * admin.
+     * @throws ApiException With ACCESS_DENIED if not resource owner
+     * or admin.
+     */
+    public static void adminOrOwnerCheck(User current,
+                                         User resourceOwner)
+        throws ApiException {
+
+        if (!current.equals(resourceOwner) &&
+            !current.isRole("ROLE_ADMIN")) {
+            throw new ApiException(ApiStatus.ACCESS_DENIED);
+        }
+    }
+
+    /**
      * Gets sha256 hash of a string. Useful for password storage.
      * @throws ApiException With UNKNOWN_ERROR if SHA-256 isn't a supported
      * algorithm on this platform.

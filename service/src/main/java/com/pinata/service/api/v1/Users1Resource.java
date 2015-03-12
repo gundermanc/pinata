@@ -6,6 +6,7 @@ import java.net.URI;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.DELETE;
@@ -17,11 +18,10 @@ import javax.ws.rs.core.UriInfo;
 
 import com.pinata.service.datatier.SQLConnection;
 import com.pinata.service.objectmodel.User;
+import com.pinata.service.objectmodel.UserSession;
+import com.pinata.service.objectmodel.OMUtil;
 
-import com.pinata.shared.ApiException;
-import com.pinata.shared.ApiStatus;
-import com.pinata.shared.CreateUserRequest;
-import com.pinata.shared.UserResponse;
+import com.pinata.shared.*;
 
 /**
  * Users resource used for the creation of users. v1.
@@ -45,7 +45,7 @@ public class Users1Resource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response post(String jsonBody) throws ApiException {
+    public Response createUser(String jsonBody) throws ApiException {
         CreateUserRequest request = new CreateUserRequest();
         request.deserializeFrom(jsonBody);
 
@@ -79,7 +79,7 @@ public class Users1Resource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{username}")
-    public Response get(@PathParam("username") String username)
+    public Response getUser(@PathParam("username") String username)
         throws ApiException {
 
         SQLConnection sql = SQLConnection.connectDefault();
@@ -97,25 +97,34 @@ public class Users1Resource {
 
     /**
      * DELETE request. Deletes the specified user and returns it's details.
+     * Must be authenticated to hit this end point or ACCESS_DENIED will result.
+     * Users may only be deleted by themselves or by an admin.
      * @param username Username of the user to delete
      */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{username}")
-    public Response delete(@PathParam("username") String username)
+    public Response deleteUser(@HeaderParam(UserSession.HEADER) String sessionHeader,
+                               @PathParam("username") String username)
         throws ApiException {
 
         SQLConnection sql = SQLConnection.connectDefault();
 
-        User user = null;
+        UserSession session = null;
+        User foresaken = null;
         try {
-            user = User.lookup(sql, username);
-            user.delete(sql);
+            // Resume session, if a user is logged in.
+            session = UserSession.resume(sql, sessionHeader);
+
+            foresaken = User.lookup(sql, username);
+
+            // Only delete if user is deleting themself or admin is deleting.
+            OMUtil.adminOrOwnerCheck(session.getUser(), foresaken);
         } finally {
             sql.close();
         }
 
-        UserResponse userResponse = user.toResponse(ApiStatus.DELETED);
+        UserResponse userResponse = foresaken.toResponse(ApiStatus.DELETED);
         return Response.ok(userResponse.serialize()).build();
     }
 }
