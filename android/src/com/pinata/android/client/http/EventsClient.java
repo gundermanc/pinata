@@ -5,6 +5,7 @@ import com.pinata.shared.*;
 
 /**
  * HTTP Client methods for the events API endpoints.
+ * @author Elliot Essman
  */
 public abstract class EventsClient {
 
@@ -20,7 +21,7 @@ public abstract class EventsClient {
      * to a class, if successful.
      */
     public static EventResponse doCreateEventRequest(HttpClient client,
-                                     CreateEventRequest request)
+                                                     CreateEventRequest request)
         throws ClientException {
 
         EventResponse eventResponse = new EventResponse();

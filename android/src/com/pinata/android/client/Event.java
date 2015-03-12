@@ -7,6 +7,7 @@ import com.pinata.android.client.http.*;
 
 /**
  * Android Client side Event object.
+ * @author Elliot Essman
  */
 public class Event {
     /** Event ID */
@@ -45,7 +46,8 @@ public class Event {
         EventResponse response
             = EventsClient.doCreateEventRequest(client, request);
 
-        return new Event(response.eventID, response.name, response.location, response.date, response.byob);
+        return new Event(response.eventID, response.name,
+                         response.location, response.date, response.byob);
     }
 
     /**

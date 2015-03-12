@@ -13,13 +13,12 @@ import com.pinata.service.datatier.SQLConnection;
 import com.pinata.service.datatier.EventsTable;
 
 /**
- * Event API, used for all operations pertaining to a user and he or her
- * relations.
- * @author Christian Gunderman
+ * Event OM API.
+ * @author Elliot Essman
  */
 public class Event {
 
-    /** Minumim name length. */
+    /** Minimum name length. */
     private static int NAME_MIN = 5;
     /**
      * Maximum name length. You MUST make sure that this value is less
@@ -88,7 +87,8 @@ public class Event {
 
     /**
      * Looks up an event in the datatier and returns it as a Event object.
-     * @throws ApiException With APP_EVENT_NOT_EXIST if event doesn't exist     * , or another code if SQL error occurs.
+     * @throws ApiException With APP_EVENT_NOT_EXIST if event doesn't exist
+     * or another code if SQL error occurs.
      * @param sql The SQL connection.
      * @param eid The id of the event to look up.
      * @return A new event object for the event.
@@ -108,7 +108,7 @@ public class Event {
             if (!result.next()) {
                 throw new ApiException(ApiStatus.APP_EVENT_NOT_EXIST);
             }
-            
+
             return new Event(result.getInt("eid"),
                             result.getString("name"),
                             result.getString("location"),

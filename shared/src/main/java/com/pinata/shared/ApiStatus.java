@@ -27,12 +27,12 @@ public enum ApiStatus {
     APP_INVALID_PASS_LENGTH(702, 400, "Password is either too short or too long."),
     APP_INVALID_BIRTHDAY(703, 400, "Birthday is in the future."),
     APP_USERNAME_TAKEN(704, 400, "A user with this name already exists."),
-    APP_USER_NOT_EXIST(704, 400, "The requested user does not exist."),
-    APP_INVALID_EMAIL(705, 400, "Email address is invalid."),
-    APP_EVENT_NOT_EXIST(706, 400, "No events found with given id."),
-    APP_INVALID_EVENT_NAME_LENGTH(707, 400, "Event name is either too short or too long."),
-    APP_INVALID_EVENT_LOC_LENGTH(708, 400, "Event location is either too short or too long."),
-    APP_INVALID_EVENT_DATE(709, 400, "Event date is in the past.");
+    APP_USER_NOT_EXIST(705, 400, "The requested user does not exist."),
+    APP_INVALID_EMAIL(706, 400, "Email address is invalid."),
+    APP_EVENT_NOT_EXIST(707, 400, "No events found with given id."),
+    APP_INVALID_EVENT_NAME_LENGTH(709, 400, "Event name is either too short or too long."),
+    APP_INVALID_EVENT_LOC_LENGTH(710, 400, "Event location is either too short or too long."),
+    APP_INVALID_EVENT_DATE(711, 400, "Event date is in the past.");
 
     /** The String name of the state (OK, MALFORMED_REQUEST, ...) */
     public final String status;

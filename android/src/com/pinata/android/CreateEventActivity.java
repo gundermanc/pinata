@@ -25,6 +25,7 @@ import com.pinata.shared.*;
 
 /**
  * CreateEventActivity UI Handling Routines.
+ * @author Elliot Essman
  */
 public class CreateEventActivity extends Activity {
 
@@ -83,7 +84,7 @@ public class CreateEventActivity extends Activity {
      * Defines an async CreateEvent operation that grabs data from the UI
      * widgets, tells the server to make a new event, and then updates the
      * statusTextView.
-     * @author Christian Gunderman
+     * @author Elliot Essman
      */
     private class AsyncCreateEventRequest extends AsyncClientOperation {
 
@@ -113,8 +114,12 @@ public class CreateEventActivity extends Activity {
             this.byob
                 = byobCheckBox.isChecked();
 
+            // TODO: Date doesn't transfer time.
+            // Replace calendar up the stack.
             Calendar calendar = new GregorianCalendar(
-                    datePicker.getYear(),                                                      datePicker.getMonth(),                                                     datePicker.getDayOfMonth(),
+                    datePicker.getYear(),
+                    datePicker.getMonth(),
+                    datePicker.getDayOfMonth(),
                     timePicker.getCurrentHour(),
                     timePicker.getCurrentMinute());
 

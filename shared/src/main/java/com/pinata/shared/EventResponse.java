@@ -6,11 +6,12 @@ import flexjson.JSON;
 
 /**
  * Event JSON Response from server to client.
+ * @author Elliot Essman
  */
 public class EventResponse extends ApiResponse {
 
     /** EventID. */
-    @JSON(include=true, name="eventID")
+    @JSON(include=true, name="event_id")
     public int eventID;
 
     /** Event name */

@@ -79,7 +79,8 @@ public class EventsTable {
 
         try {
             PreparedStatement insertStatement
-                = connection.prepareStatement(INSERT_EVENT_QUERY, Statement.RETURN_GENERATED_KEYS);
+                = connection.prepareStatement(INSERT_EVENT_QUERY,
+                                              Statement.RETURN_GENERATED_KEYS);
             insertStatement.setString(1, name);
             insertStatement.setString(2, location);
             insertStatement.setDate(3, new java.sql.Date(date.getTime()));

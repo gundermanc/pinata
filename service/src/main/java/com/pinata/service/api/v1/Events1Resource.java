@@ -25,6 +25,7 @@ import com.pinata.shared.EventResponse;
 
 /**
  * Events resource used for the creation of events. v1.
+ * @author Elliot Essman
  */
 @Path("v1/events")
 public class Events1Resource {
@@ -70,7 +71,7 @@ public class Events1Resource {
     }
 
     /**
-     * GET request. Pulls down event's profile.
+     * GET request. Pulls down event's details.
      * @param eventID ID of the event to pull down.
      */
     @GET
