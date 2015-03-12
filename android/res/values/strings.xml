@@ -8,4 +8,11 @@
     <string name="create_user_email_edittext_hint">Email</string>
     <string name="create_user_male_radiobutton_text">Male</string>
     <string name="create_user_female_radiobutton_text">Female</string>
+
+    <string name="create_event_submit_button_text">Create Event</string>
+    <string name="create_event_status_textview_text">Ready</string>
+    <string name="create_event_eventname_edittext_hint">Event name</string>
+    <string name="create_event_location_edittext_hint">location</string>
+    <string name="create_event_byob_checkbox_text">byob?</string>
+
 </resources>

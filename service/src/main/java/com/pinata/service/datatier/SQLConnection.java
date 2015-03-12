@@ -130,6 +130,7 @@ public class SQLConnection  {
             
             // Create Tables.
             UsersTable.create(sql);
+            EventsTable.create(sql);
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }

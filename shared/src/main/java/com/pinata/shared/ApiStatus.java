@@ -5,6 +5,12 @@ package com.pinata.shared;
  * @author Christian Gunderman
  */
 public enum ApiStatus {
+
+    /*
+     * DANGER!!!!
+     * Make sure that the first param for each value is UNIQUE when merging.
+     */
+
     // Success codes.
     OK(200, 200, "Success."),
     CREATED(201, 201, "Created."),
@@ -27,10 +33,14 @@ public enum ApiStatus {
     APP_INVALID_PASS_LENGTH(702, 400, "Password is either too short or too long."),
     APP_INVALID_BIRTHDAY(703, 400, "Birthday is in the future."),
     APP_USERNAME_TAKEN(704, 400, "A user with this name already exists."),
-    APP_USER_NOT_EXIST(704, 400, "The requested user does not exist."),
-    APP_INVALID_EMAIL(705, 400, "Email address is invalid."),
-    APP_INVALID_USERNAME(706, 400, "Username contains invalid character(s)."),
-    APP_INVALID_PASSWORD(707, 400, "Password cannot contain spaces.");
+    APP_USER_NOT_EXIST(705, 400, "The requested user does not exist."),
+    APP_INVALID_EMAIL(706, 400, "Email address is invalid."),
+    APP_INVALID_USERNAME(707, 400, "Username contains invalid character(s)."),
+    APP_INVALID_PASSWORD(708, 400, "Password cannot contain spaces."),
+    APP_EVENT_NOT_EXIST(709, 400, "No events found with given id."),
+    APP_INVALID_EVENT_NAME_LENGTH(710, 400, "Event name is either too short or too long."),
+    APP_INVALID_EVENT_LOC_LENGTH(711, 400, "Event location is either too short or too long."),
+    APP_INVALID_EVENT_DATE(712, 400, "Event date is in the past.");
 
     /** The String name of the state (OK, MALFORMED_REQUEST, ...) */
     public final String status;
