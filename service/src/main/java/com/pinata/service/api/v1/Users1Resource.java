@@ -56,6 +56,8 @@ public class Users1Resource {
             user = User.create(sql,
                                request.user,
                                request.pass,
+                               request.firstName,
+                               request.lastName,
                                request.gender,
                                request.birthday,
                                request.email);

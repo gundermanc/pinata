@@ -39,18 +39,32 @@ public class User {
     private static final int PASS_MIN = 6;
     /** Maximum password length. */
     private static final int PASS_MAX = 100;
+    /** First name minimum length. */
+    private static final int FIRST_NAME_MIN = 2;
+    /** First name maximum length. */
+    private static final int FIRST_NAME_MAX = 25;
+    /** Last name minimum length. */
+    private static final int LAST_NAME_MIN = 2;
+    /** Last name maximum length. */
+    private static final int LAST_NAME_MAX = 25;
     /** Maximum email length. */
     private static final int EMAIL_MAX = 320;
     /** MALE user id. */
     private static final String GENDER_MALE = "MALE";
     /** FEMALE user id. */
     private static final String GENDER_FEMALE = "FEMALE";
+
+
     /** Unique User id integer. */
     private int uid;
     /** Username. */
     private String username;
     /** Password hashes. */
     private String passwordHash;
+    /** First name. */
+    private String firstName;
+    /** Last name. */
+    private String lastName;
     /** User's gender. */
     private String gender;
     /** Date user joined. */
@@ -68,8 +82,10 @@ public class User {
      * set of values or a database error occurs.
      * @param sql The connection to the database.
      * @param username The user's username.
-     * @param gender The user's MALE or FEMALE gender String.
      * @param password The user's password.
+     * @param firstName The user's first name.
+     * @param lastName The user's last name.
+     * @param gender The user's MALE or FEMALE gender String.
      * @param birthday The user's birthday.
      * @param email The user's email address.
      * @return A new User object containing the created user.
@@ -77,6 +93,8 @@ public class User {
     public static User create(SQLConnection sql,
                               String username,
                               String password,
+                              String firstName,
+                              String lastName,
                               String gender,
                               Date birthday,
                               String emailStr) throws ApiException {
@@ -84,8 +102,10 @@ public class User {
         // Null check everything:
         OMUtil.sqlCheck(sql);
         OMUtil.nullCheck(username);
-        OMUtil.nullCheck(gender);
         OMUtil.nullCheck(password);
+        OMUtil.nullCheck(firstName);
+        OMUtil.nullCheck(lastName);
+        OMUtil.nullCheck(gender);
         OMUtil.nullCheck(birthday);
         OMUtil.nullCheck(emailStr);
 
@@ -106,6 +126,18 @@ public class User {
         // Check for spaces
         if(password.contains(" ")){
             throw new ApiException(ApiStatus.APP_INVALID_PASSWORD);
+        }
+
+        // Check first name length.
+        if (firstName.length() > FIRST_NAME_MAX ||
+            firstName.length() < FIRST_NAME_MIN) {
+            throw new ApiException(ApiStatus.APP_INVALID_NAME);
+        }
+
+        // Check last name length.
+        if (lastName.length() > LAST_NAME_MAX ||
+            lastName.length() < LAST_NAME_MIN) {
+            throw new ApiException(ApiStatus.APP_INVALID_NAME);
         }
 
         // Check gender for proper values.
@@ -138,7 +170,8 @@ public class User {
         // Insert user query.
         Date joinDate = new Date();
         int uid = UserTable.insertUser(sql, username, password,
-                                        gender, joinDate, birthday, emailAddr);
+                                       firstName, lastName, gender, joinDate,
+                                       birthday, emailAddr);
 
         // User role query.
         // NOTE: if you remove this line of code, you will break lookup which
@@ -147,7 +180,7 @@ public class User {
                                            uid,
                                            UserRoleTable.ROLE_USER_ID);
         
-        return new User(uid, username, password, gender,
+        return new User(uid, username, password, firstName, lastName, gender,
                         joinDate, birthday, emailStr);
     }
 
@@ -178,6 +211,8 @@ public class User {
             User user = new User(result.getInt("uid"),
                                  result.getString("user"),
                                  result.getString("pass"),
+                                 result.getString("first_name"),
+                                 result.getString("last_name"),
                                  result.getString("gender"),
                                  result.getDate("join_date"),
                                  result.getDate("birth_date"),
@@ -230,6 +265,22 @@ public class User {
      */
     public String getUsername() {
         return this.username;
+    }
+
+    /**
+     * Gets this user's first name.
+     * @return First name.
+     */
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    /**
+     * Gets this user's last name.
+     * @return Last name.
+     */
+    public String getLastName() {
+        return this.lastName;
     }
 
     /**
@@ -301,6 +352,8 @@ public class User {
     public UserResponse toResponse(ApiStatus status) {
         return new UserResponse(status,
                                 this.getUsername(),
+                                this.getFirstName(),
+                                this.getLastName(),
                                 this.getGender(),
                                 this.getJoinDate(),
                                 this.getBirthday(),
@@ -487,16 +540,21 @@ public class User {
      * Creates a new User OM object. Constructor is private because User
      * objects can only be created internally from data tier or calls to create().
      * @param username The user's username.
-     * @param gender The user's gender, MALE or FEMALE.
      * @param password The user's password.
+     * @param gender The user's gender, MALE or FEMALE.
+     * @param firstName The user's first name.
+     * @param lastName The user's last name.
      * @param birthday The user's birthday.
      */
     private User(int uid, String username, String passwordHash,
+                 String firstName, String lastName,
                  String gender, Date joinDate,
                  Date birthday, String email) {
         this.uid = uid;
         this.username = username;
         this.passwordHash = passwordHash;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.gender = gender;
         this.joinDate = joinDate;
         this.birthday = birthday;

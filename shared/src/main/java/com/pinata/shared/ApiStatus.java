@@ -50,7 +50,8 @@ public enum ApiStatus {
     APP_ROLE_ID_TAKEN(710, 400, "Can't add Role. Role already exists."),
     APP_USER_HAS_ROLE_DUPLICATE(711, 400, "User already has Role, or Role doesn't exist."),
     APP_USER_NOT_HAVE_ROLE(712, 400, "User does not have Role."),
-    APP_ROLE_NOT_EXIST(713, 400, "Role does not exist.");
+    APP_ROLE_NOT_EXIST(713, 400, "Role does not exist."),
+    APP_INVALID_NAME(714, 400, "First name or last name is too short or too long.");
 
     /** The String name of the state (OK, MALFORMED_REQUEST, ...) */
     public final String status;

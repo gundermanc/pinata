@@ -28,6 +28,8 @@ public abstract class UserTable {
         "  uid MEDIUMINT AUTO_INCREMENT," +
         "  user VARCHAR(25) NOT NULL," +
         "  pass VARCHAR(64) NOT NULL," +
+        "  first_name VARCHAR(25) NOT NULL," +
+        "  last_name  VARCHAR(25) NOT NULL," +
         "  gender VARCHAR(6) NOT NULL," +
         "  join_date DATETIME NOT NULL," +
         "  birth_date DATETIME NOT NULL," +
@@ -39,8 +41,9 @@ public abstract class UserTable {
 
     /** Create user query. */
     private static final String INSERT_USER_QUERY =
-        "INSERT INTO User (user, pass, gender, join_date, birth_date, email)" +
-        " VALUES (?,?,?,?,?,?)";
+        "INSERT INTO User (user, pass, first_name, last_name, " +
+        "gender, join_date, birth_date, email)" +
+        " VALUES (?,?,?,?,?,?,?,?)";
 
     /** Lookup user query. */
     private static final String LOOKUP_USER_QUERY =
@@ -76,6 +79,8 @@ public abstract class UserTable {
      * @param sql The SQLConnection.
      * @param user The username of the new user.
      * @param pass The password of the new user.
+     * @param firstName The user's first name.
+     * @param lastName The user's last name.
      * @param gender A value up to 6 chars. Should be MALE or FEMALE.
      * @param joinDate The date that the new user joined.
      * @param birthDate The new user's birthday.
@@ -85,6 +90,8 @@ public abstract class UserTable {
     public static int insertUser(SQLConnection sql,
                                  String user,
                                  String pass,
+                                 String firstName,
+                                 String lastName,
                                  String gender,
                                  Date joinDate,
                                  Date birthDate,
@@ -96,10 +103,12 @@ public abstract class UserTable {
                 = connection.prepareStatement(INSERT_USER_QUERY);
             insertStatement.setString(1, user);
             insertStatement.setString(2, pass);
-            insertStatement.setString(3, gender);
-            insertStatement.setDate(4, new java.sql.Date(joinDate.getTime()));
-            insertStatement.setDate(5, new java.sql.Date(birthDate.getTime()));
-            insertStatement.setString(6, email.getAddress());
+            insertStatement.setString(3, firstName);
+            insertStatement.setString(4, lastName);
+            insertStatement.setString(5, gender);
+            insertStatement.setDate(6, new java.sql.Date(joinDate.getTime()));
+            insertStatement.setDate(7, new java.sql.Date(birthDate.getTime()));
+            insertStatement.setString(8, email.getAddress());
 
             insertStatement.execute();
 
