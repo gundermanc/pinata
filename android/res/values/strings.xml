@@ -8,6 +8,8 @@
     <string name="create_user_submit_button_text">Create User</string>
     <string name="create_user_username_edittext_hint">Username</string>
     <string name="create_user_password_edittext_hint">Password</string>
+    <string name="create_user_firstname_edittext_hint">First name</string>
+    <string name="create_user_lastname_edittext_hint">Last name</string>
     <string name="create_user_email_edittext_hint">Email</string>
     <string name="create_user_male_radiobutton_text">Male</string>
     <string name="create_user_female_radiobutton_text">Female</string>

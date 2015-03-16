@@ -30,6 +30,10 @@ public class CreateUserActivity extends Activity {
     private EditText usernameEditText;
     /** The password EditText. */
     private EditText passwordEditText;
+    /** The first name EditText. */
+    private EditText firstNameEditText;
+    /** The last name EditText. */
+    private EditText lastNameEditText;
     /** The gender radiobutton group. */
     private RadioGroup genderRadioGroup;
     /** The birthday DatePicker control. */
@@ -60,6 +64,10 @@ public class CreateUserActivity extends Activity {
             = (EditText)this.findViewById(R.id.create_user_username_edittext);
         this.passwordEditText
             = (EditText)this.findViewById(R.id.create_user_password_edittext);
+        this.firstNameEditText
+            = (EditText)this.findViewById(R.id.create_user_firstname_edittext);
+        this.lastNameEditText
+            = (EditText)this.findViewById(R.id.create_user_lastname_edittext);
         this.genderRadioGroup
             = (RadioGroup)this.findViewById(R.id.create_user_gender_radiogroup);
         this.birthdayDatePicker
@@ -91,6 +99,10 @@ public class CreateUserActivity extends Activity {
         private String username;
         /** The password for the new user. */
         private String password;
+        /** The user's first name. */
+        private String firstName;
+        /** The user's last name. */
+        private String lastName;
         /** The ID of the selected gender button, or -1 for none. */
         private int genderButtonId;
         /** The birthday for the new user. */
@@ -111,6 +123,8 @@ public class CreateUserActivity extends Activity {
             // Cache any data from the UI that we need for this request.
             this.username = usernameEditText.getText().toString();
             this.password = passwordEditText.getText().toString();
+            this.firstName = firstNameEditText.getText().toString();
+            this.lastName = lastNameEditText.getText().toString();
             this.genderButtonId
                 = genderRadioGroup.getCheckedRadioButtonId();
 
@@ -152,6 +166,8 @@ public class CreateUserActivity extends Activity {
             User.create(client,
                         username,
                         password,
+                        firstName,
+                        lastName,
                         gender,
                         birthday,
                         email);
