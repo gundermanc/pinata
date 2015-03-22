@@ -39,6 +39,8 @@ public class Event {
     private Date date;
     /** Event's bring your own beer. */
     private Boolean byob;
+    /** The uid of the host of the event */
+    private int host;
 
     /**
      * Creates a new Event and stores in data tier.
@@ -49,13 +51,15 @@ public class Event {
      * @param location A description of where the event is.
      * @param date The date for the event.
      * @param byob Short for bring your own beer.
+     * @param host The uid of the host of the event
      * @return A new Event object containing the created Event.
      */
     public static Event create(SQLConnection sql,
                                String name,
                                String location,
                                Date date,
-                               Boolean byob) throws ApiException {
+                               Boolean byob, 
+                               User hostUser) throws ApiException {
 
         // Null check everything:
         OMUtil.sqlCheck(sql);
@@ -63,6 +67,7 @@ public class Event {
         OMUtil.nullCheck(location);
         OMUtil.nullCheck(date);
         OMUtil.nullCheck(byob);
+        OMUtil.nullCheck(hostUser);
 
         // Check name length.
         if (name.length() > NAME_MAX || name.length() < NAME_MIN) {
@@ -81,8 +86,8 @@ public class Event {
         }
 
         // Query DB.
-        int eid = EventsTable.insertEvent(sql, name, location, date, byob);
-        return new Event(eid, name, location, date, byob);
+        int eid = EventsTable.insertEvent(sql, name, location, date, byob, hostUser.getUid());
+        return new Event(eid, name, location, date, byob, hostUser.getUid());
     }
 
     /**
@@ -113,7 +118,8 @@ public class Event {
                             result.getString("name"),
                             result.getString("location"),
                             result.getDate("date"),
-                            result.getBoolean("byob"));
+                            result.getBoolean("byob"),
+                            result.getInt("host"));
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
@@ -185,13 +191,18 @@ public class Event {
         return this.byob;
     }
 
+    public int getHost(){
+        return this.host;
+    }
+
     public EventResponse toResponse(ApiStatus status) {
         return new EventResponse(status,
                                 this.getID(),
                                 this.getName(),
                                 this.getLocation(),
                                 this.getDate(),
-                                this.getByob());
+                                this.getByob(),
+                                this.getHost());
     }
 
     /**
@@ -202,12 +213,14 @@ public class Event {
      * @param location The event's location.
      * @param date The event's date.
      * @param byob The byob status of the event.
+     * @param host The uid of the host of the event
      */
-    private Event(int eid, String name, String location, Date date, boolean byob) {
+    private Event(int eid, String name, String location, Date date, boolean byob, int host) {
         this.eid = eid;
         this.name = name;
         this.location = location;
         this.date = date;
         this.byob = byob;
+        this.host = host;
     }
 }

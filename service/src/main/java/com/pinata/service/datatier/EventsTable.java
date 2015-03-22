@@ -28,13 +28,15 @@ public class EventsTable {
         "  location VARCHAR(200) NOT NULL," +
         "  date DATETIME NOT NULL," +
         "  byob BOOLEAN NOT NULL," +
-        "  PRIMARY KEY(eid) " +
+        "  host MEDIUMINT NOT NULL, " +
+        "  PRIMARY KEY(eid), " +
+        "  FOREIGN KEY(host) REFERENCES User(uid) ON DELETE CASCADE " +
         ")";
 
     /** Create events query. */
     private static final String INSERT_EVENT_QUERY =
-        "INSERT INTO Events (name, location, date, byob)" +
-        " VALUES (?,?,?,?)";
+        "INSERT INTO Events (name, location, date, byob, host)" +
+        " VALUES (?,?,?,?,?)";
 
     /** Lookup event query. */
     private static final String LOOKUP_EVENT_QUERY =
@@ -68,13 +70,15 @@ public class EventsTable {
      * @param location A description of where the event is.
      * @param date The date for the event.
      * @param byob Short for bring your own beer.
+     * @param host The uid of the host of the event
      * @return The id of the inserted event.
      */
     public static int insertEvent(SQLConnection sql,
                                   String name,
                                   String location,
                                   Date date,
-                                  Boolean byob) throws ApiException {
+                                  Boolean byob, 
+                                  int host) throws ApiException {
         Connection connection = sql.connection;
 
         try {
@@ -85,6 +89,7 @@ public class EventsTable {
             insertStatement.setString(2, location);
             insertStatement.setDate(3, new java.sql.Date(date.getTime()));
             insertStatement.setBoolean(4, byob);
+            insertStatement.setInt(5, host);
             insertStatement.execute();
             //return the id of the new event
             ResultSet rs = insertStatement.getGeneratedKeys();
