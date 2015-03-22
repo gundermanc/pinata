@@ -48,6 +48,7 @@ fi
 if [ $? -eq 0 ]
 then
     echo "Installing..."
+    sudo rm -rf /var/lib/$PINATA_TOMCAT_VERSION/webapps/*
     sudo cp -f service/build/libs/service.war /var/lib/$PINATA_TOMCAT_VERSION/webapps/ROOT.war
 fi
 echo "Finished."
