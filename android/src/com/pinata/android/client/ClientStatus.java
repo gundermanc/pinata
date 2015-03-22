@@ -13,6 +13,8 @@ public enum ClientStatus {
     APP_WAITING(301, "Waiting..."),
     APP_MUST_CHOOSE_GENDER(302, "You must first choose a gender."),
     APP_MUST_ENTER_USERNAME_PASSWORD(303, "You must enter a username and password."),
+    APP_UNKNOWN_ERROR(304, "Unknown error."),
+    APP_MUST_ENTER_BIRTHDAY(305, "You must first enter your birthday."),
 
     // HTTP Client Errors.
     HTTP_UNKNOWN_ERROR(400, "Unknown error. Unable to reach server."),

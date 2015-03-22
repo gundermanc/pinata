@@ -12,7 +12,6 @@
       android:text="@string/profile_label"
       android:background="@color/ui_theme_color_a"
       android:textColor="@color/ui_static_text_color"
-      android:textSize="@dimen/ui_label_text_dimension"
       android:layout_marginBottom="@dimen/ui_vertical_margin"
       />
   <Button
