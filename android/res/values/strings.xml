@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">Pinata</string>
     <string name="greeter_label">Pinata Greeter</string>
-    <string name="greeter_create_user_button_text">Sign up</string>
-    <string name="greeter_login_button_text">Log in</string>
+    <string name="greeter_create_user_button_text">sign up</string>
+    <string name="greeter_login_button_text">log in</string>
     <string name="create_user_label">Pinata Signup</string>
     <string name="create_user_submit_button_text">Create User</string>
     <string name="create_user_username_edittext_hint">Username</string>
