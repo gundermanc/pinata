@@ -42,10 +42,6 @@ public class EventsTable {
     private static final String LOOKUP_EVENT_QUERY =
         "SELECT * FROM Events WHERE eid=?";
 
-    /** hosted events query. */
-    private static final String HOSTED_EVENTS_QUERY =
-        "SELECT * FROM Events WHERE hostID=?";
-
     /** Delete event query. */
     private static final String DELETE_EVENT_QUERY =
         "DELETE FROM Events WHERE eid=?";
@@ -126,30 +122,6 @@ public class EventsTable {
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
-    }
-
-    /**
-     * Looks up all events in the database hosted by the host and returns the associated ResultSet.
-     * @throws ApiException If a SQL error occurs.
-     * @param sql The database connection.
-     * @param hostID The id of the host to look up.
-     * @return A ResultSet containing the events.
-     */
-    public static ResultSet eventsByHost(SQLConnection sql, int hostID)
-        throws ApiException{
-
-        Connection connection = sql.connection;
-
-        try {
-            PreparedStatement lookupStatement =
-                connection.prepareStatement(HOSTED_EVENTS_QUERY);
-            lookupStatement.setInt(1, hostID);
-
-            return lookupStatement.executeQuery();
-        } catch (SQLException ex) {
-            throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
-        }
-
     }
 
     /**

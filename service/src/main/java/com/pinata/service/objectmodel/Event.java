@@ -53,7 +53,7 @@ public class Event {
      * @param location A description of where the event is.
      * @param date The date for the event.
      * @param byob Short for bring your own beer.
-     * @param hostID The uid of the host of the event
+     * @param hostUser The host of the event.
      * @return A new Event object containing the created Event.
      */
     public static Event create(SQLConnection sql,
@@ -127,40 +127,6 @@ public class Event {
         }
     }
     
-    /**
-     * Returns a list of all events hosted by the given host id.
-     * @throws ApiException If a database error occurs.
-     * @param sql The SQL connection.
-     * @param host The host of the events to return.
-     */
-    public static List<Event> myEvents(SQLConnection sql, User host) 
-        throws ApiException{
-
-        // Null check everything:
-        OMUtil.sqlCheck(sql);
-        OMUtil.nullCheck(host);
- 
-        ResultSet result = EventsTable.eventsByHost(sql, host.getUid());
-        // Build Event objects.
-        List<Event> events = new LinkedList<Event>();
-        try {
-            /*if(result.getFetchSize() < 1){
-                throw new ApiException(ApiStatus.APP_EVENT_NOT_EXIST);
-            }*/
-            while(result.next()){
-                events.add(new Event(result.getInt("eid"),
-                            result.getString("name"),
-                            result.getString("location"),
-                            result.getDate("date"),
-                            result.getBoolean("byob"),
-                            result.getInt("hostID")));
-            }
-        } catch (SQLException ex) {
-            throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
-        }
-        return events;
-    }
-
     /**
      * Deletes an event.
      * @throws ApiException If a database error occurs.
