@@ -60,6 +60,13 @@ public class ProfileActivity extends Activity {
         new AsyncDeleteSessionRequest().execute();
     }
 
+    public void onCreateEventButtonClicked(View view){
+        Intent launchActivityIntent
+            = new Intent(this, CreateEventActivity.class);
+
+        startActivity(launchActivityIntent);
+    }
+
     /**
      * Defines an async DeleteSession operation that tells the server
      * to log out of the session and then updates the UI.

@@ -31,8 +31,8 @@ public class EventResponse extends ApiResponse {
     public boolean byob;
 
     /** ID of event's host */
-    @JSON(include=true, name="host")
-    public int host;
+    @JSON(include=true, name="hostID")
+    public int hostID;
 
 
     /**
@@ -57,13 +57,13 @@ public class EventResponse extends ApiResponse {
                         String location,
                         Date date,
                         boolean byob,
-                        int host) {
+                        int hostID) {
         super(status);
         this.eventID = eventID;
         this.name = name;
         this.location = location;
         this.date = date;
         this.byob = byob;
-        this.host = host;
+        this.hostID = hostID;
     }
 }

@@ -1,6 +1,8 @@
 package com.pinata.service.objectmodel;
 
 import java.util.Date;
+import java.util.List;
+import java.util.LinkedList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +42,7 @@ public class Event {
     /** Event's bring your own beer. */
     private Boolean byob;
     /** The uid of the host of the event */
-    private int host;
+    private int hostID;
 
     /**
      * Creates a new Event and stores in data tier.
@@ -51,7 +53,7 @@ public class Event {
      * @param location A description of where the event is.
      * @param date The date for the event.
      * @param byob Short for bring your own beer.
-     * @param host The uid of the host of the event
+     * @param hostID The uid of the host of the event
      * @return A new Event object containing the created Event.
      */
     public static Event create(SQLConnection sql,
@@ -119,10 +121,44 @@ public class Event {
                             result.getString("location"),
                             result.getDate("date"),
                             result.getBoolean("byob"),
-                            result.getInt("host"));
+                            result.getInt("hostID"));
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
+    }
+    
+    /**
+     * Returns a list of all events hosted by the given host id.
+     * @throws ApiException If a database error occurs.
+     * @param sql The SQL connection.
+     * @param host The host of the events to return.
+     */
+    public static List<Event> myEvents(SQLConnection sql, User host) 
+        throws ApiException{
+
+        // Null check everything:
+        OMUtil.sqlCheck(sql);
+        OMUtil.nullCheck(host);
+ 
+        ResultSet result = EventsTable.eventsByHost(sql, host.getUid());
+        // Build Event objects.
+        List<Event> events = new LinkedList<Event>();
+        try {
+            /*if(result.getFetchSize() < 1){
+                throw new ApiException(ApiStatus.APP_EVENT_NOT_EXIST);
+            }*/
+            while(result.next()){
+                events.add(new Event(result.getInt("eid"),
+                            result.getString("name"),
+                            result.getString("location"),
+                            result.getDate("date"),
+                            result.getBoolean("byob"),
+                            result.getInt("hostID")));
+            }
+        } catch (SQLException ex) {
+            throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
+        }
+        return events;
     }
 
     /**
@@ -192,7 +228,7 @@ public class Event {
     }
 
     public int getHost(){
-        return this.host;
+        return this.hostID;
     }
 
     public EventResponse toResponse(ApiStatus status) {
@@ -213,14 +249,14 @@ public class Event {
      * @param location The event's location.
      * @param date The event's date.
      * @param byob The byob status of the event.
-     * @param host The uid of the host of the event
+     * @param hostID The uid of the host of the event
      */
-    private Event(int eid, String name, String location, Date date, boolean byob, int host) {
+    private Event(int eid, String name, String location, Date date, boolean byob, int hostID) {
         this.eid = eid;
         this.name = name;
         this.location = location;
         this.date = date;
         this.byob = byob;
-        this.host = host;
+        this.hostID = hostID;
     }
 }

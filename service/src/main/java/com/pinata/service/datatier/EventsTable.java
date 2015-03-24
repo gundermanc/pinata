@@ -28,19 +28,23 @@ public class EventsTable {
         "  location VARCHAR(200) NOT NULL," +
         "  date DATETIME NOT NULL," +
         "  byob BOOLEAN NOT NULL," +
-        "  host MEDIUMINT NOT NULL, " +
+        "  hostID MEDIUMINT NOT NULL, " +
         "  PRIMARY KEY(eid), " +
-        "  FOREIGN KEY(host) REFERENCES User(uid) ON DELETE CASCADE " +
+        "  FOREIGN KEY(hostID) REFERENCES User(uid) ON DELETE CASCADE " +
         ")";
 
     /** Create events query. */
     private static final String INSERT_EVENT_QUERY =
-        "INSERT INTO Events (name, location, date, byob, host)" +
+        "INSERT INTO Events (name, location, date, byob, hostID)" +
         " VALUES (?,?,?,?,?)";
 
     /** Lookup event query. */
     private static final String LOOKUP_EVENT_QUERY =
         "SELECT * FROM Events WHERE eid=?";
+
+    /** hosted events query. */
+    private static final String HOSTED_EVENTS_QUERY =
+        "SELECT * FROM Events WHERE hostID=?";
 
     /** Delete event query. */
     private static final String DELETE_EVENT_QUERY =
@@ -70,7 +74,7 @@ public class EventsTable {
      * @param location A description of where the event is.
      * @param date The date for the event.
      * @param byob Short for bring your own beer.
-     * @param host The uid of the host of the event
+     * @param hostID The uid of the host of the event
      * @return The id of the inserted event.
      */
     public static int insertEvent(SQLConnection sql,
@@ -78,7 +82,7 @@ public class EventsTable {
                                   String location,
                                   Date date,
                                   Boolean byob, 
-                                  int host) throws ApiException {
+                                  int hostID) throws ApiException {
         Connection connection = sql.connection;
 
         try {
@@ -89,7 +93,7 @@ public class EventsTable {
             insertStatement.setString(2, location);
             insertStatement.setDate(3, new java.sql.Date(date.getTime()));
             insertStatement.setBoolean(4, byob);
-            insertStatement.setInt(5, host);
+            insertStatement.setInt(5, hostID);
             insertStatement.execute();
             //return the id of the new event
             ResultSet rs = insertStatement.getGeneratedKeys();
@@ -114,14 +118,38 @@ public class EventsTable {
         Connection connection = sql.connection;
 
         try {
-            PreparedStatement lookupStatement =
+            PreparedStatement hostedStatement =
                 connection.prepareStatement(LOOKUP_EVENT_QUERY);
-            lookupStatement.setInt(1, eid);
+            hostedStatement.setInt(1, eid);
+
+            return hostedStatement.executeQuery();
+        } catch (SQLException ex) {
+            throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
+        }
+    }
+
+    /**
+     * Looks up all events in the database hosted by the host and returns the associated ResultSet.
+     * @throws ApiException If a SQL error occurs.
+     * @param sql The database connection.
+     * @param hostID The id of the host to look up.
+     * @return A ResultSet containing the events.
+     */
+    public static ResultSet eventsByHost(SQLConnection sql, int hostID)
+        throws ApiException{
+
+        Connection connection = sql.connection;
+
+        try {
+            PreparedStatement lookupStatement =
+                connection.prepareStatement(HOSTED_EVENTS_QUERY);
+            lookupStatement.setInt(1, hostID);
 
             return lookupStatement.executeQuery();
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
+
     }
 
     /**
