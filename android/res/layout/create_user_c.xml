@@ -104,6 +104,7 @@
       android:textColor="@color/ui_themed_button_text_b"
       android:textSize="@dimen/ui_button_text_size"
       android:textStyle="@integer/ui_text_style"
+      android:enabled="false"
       
       android:layout_weight=".33"
       

@@ -32,8 +32,10 @@
     <!-- Button values -->
     <color name="ui_button_color">#00000000</color>
     <color name="ui_button_text_color">#FFFFFF</color>
+    <color name="ui_button_text_disabled_color">#999999</color>
     <dimen name="ui_button_text_size">72dp</dimen>
 
     <!-- 1 means bold. -->
     <integer name="ui_edittext_text_style">1</integer>
+
 </resources>
