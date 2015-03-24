@@ -28,7 +28,7 @@ public class HttpClient {
     /** User agent: tells the server who this is that is connecting. */
     private static final String USER_AGENT = "Android/PinataClient";
     /** Domain name of the server to connect to. */
-    private static final String HOSTNAME = "gundersonofboss.case.edu:8080";
+    private static final String HOSTNAME = "tmpd4bed93f341b.STUDENT.CWRU.Edu:8080";
 
     /** The Pinata Session Http Header. */
     private static final String SESSION_HEADER = "Pinata-Session";

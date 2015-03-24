@@ -18,6 +18,7 @@
     <string name="profile_label">Pinata Profile</string>
     <string name="profile_logout_button_text">Logout</string>
     <string name="profile_create_event_button_text">Create Event</string>
+    <string name="create_event_label">Pinata Create Event</string>
     <string name="create_event_submit_button_text">Create Event</string>
     <string name="create_event_status_textview_text">Ready</string>
     <string name="create_event_eventname_edittext_hint">Event name</string>

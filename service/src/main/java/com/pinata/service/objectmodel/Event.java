@@ -83,7 +83,7 @@ public class Event {
 
         // Check for future dates.
         Date today = new Date();
-        if (!today.after(date)) {
+        if (today.after(date)) {
             throw new ApiException(ApiStatus.APP_INVALID_EVENT_DATE);
         }
 

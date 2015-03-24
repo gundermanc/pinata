@@ -18,6 +18,9 @@
         <activity android:name="LoginActivity"
                   android:label="@string/login_label">
         </activity>
+	<activity android:name="CreateEventActivity"
+                  android:label="@string/create_event_label">
+        </activity>
         <activity android:name="ProfileActivity"
                   android:label="@string/profile_label">
         </activity>
