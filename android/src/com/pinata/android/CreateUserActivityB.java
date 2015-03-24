@@ -48,9 +48,6 @@ public class CreateUserActivityB extends Activity {
     /** The next activity button. */
     private Button nextButton;
 
-    /** New user session for login after user is created. */
-    private UserSession session;
-
     /**
      * Called by Android OS when activity is first started.
      */
@@ -103,6 +100,10 @@ public class CreateUserActivityB extends Activity {
         this.lastNameEditText.addTextChangedListener(watcher);
     }
 
+    /**
+     * Checks to see if the user has provided SOME input for all fields.
+     * If so, enables the next button.
+     */
     private void tryEnableNext() {
         if (firstNameEditText.length() > 0 &&
             lastNameEditText.length() > 0 &&
@@ -148,6 +149,7 @@ public class CreateUserActivityB extends Activity {
      * @param The view that was clicked, the submit button.
      */
     public void onBirthdayButtonClicked(View view) {
+
         // Create date picker dialog. Save birthday when set.
         final DatePickerDialog dialog = new DatePickerDialog(this,
            new DatePickerDialog.OnDateSetListener() {
@@ -168,7 +170,8 @@ public class CreateUserActivityB extends Activity {
            }, 1993, 1, 1);
 
         // Create dialog close button.
-        dialog.setButton(DatePickerDialog.BUTTON_POSITIVE, "Done",
+        dialog.setButton(DatePickerDialog.BUTTON_POSITIVE, 
+                         getResources().getString(R.string.app_done),
                          new DialogInterface.OnClickListener() {
                              @Override
                              public void onClick(DialogInterface dialogInterface, int which) {
@@ -176,6 +179,8 @@ public class CreateUserActivityB extends Activity {
                                  tryEnableNext();
                              }
                          });
+
+        // Display dialog.
         dialog.show();
     }
 }

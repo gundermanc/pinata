@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Pinata</string>
+    <string name="app_done">Done</string>
     <string name="greeter_label">Pinata Greeter</string>
     <string name="greeter_create_user_button_text">sign up</string>
     <string name="greeter_login_button_text">log in</string>

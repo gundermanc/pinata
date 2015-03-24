@@ -32,14 +32,20 @@ public class CreateUserActivityC extends Activity {
 
     /** Specifies an Intent extra for passing the gender. */
     public static final String EXTRA_GENDER = "GENDER";
+    /** First name intent extra id. */
     public static final String EXTRA_FIRST_NAME = "FIRST_NAME";
+    /** Last name intent extra id. */
     public static final String EXTRA_LAST_NAME = "LAST_NAME";
+    /** Birthday intent extra id. */
     public static final String EXTRA_BIRTHDAY = "BIRTHDAY";
 
     /** The gender String for the new user. */
     private String gender;
+    /** The user's first name. */
     private String firstName;
+    /** The user's last name. */
     private String lastName;
+    /** The user's birthday as a long in UNIX millis. time. */
     private long birthday;
 
     /** The email EditText*/
@@ -112,6 +118,9 @@ public class CreateUserActivityC extends Activity {
         this.passwordEditText.addTextChangedListener(watcher);
     }
 
+    /**
+     * Checks that all fields have SOME input and enables the submit button.
+     */
     private void tryEnableSubmit() {
         if (emailEditText.getText().length() > 0 &&
             usernameEditText.getText().length() > 0 &&
