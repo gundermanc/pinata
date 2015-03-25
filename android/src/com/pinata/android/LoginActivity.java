@@ -99,6 +99,10 @@ public class LoginActivity extends Activity {
                            Toast.LENGTH_SHORT).show();
             */
 
+            LoginActivity.this.usernameEditText.setEnabled(false);
+            LoginActivity.this.passwordEditText.setEnabled(false);
+            LoginActivity.this.submitButton.setEnabled(false);
+
             // Cache any data from the UI that we need for this request.
             this.username = usernameEditText.getText().toString();
             this.password = passwordEditText.getText().toString();
@@ -179,6 +183,9 @@ public class LoginActivity extends Activity {
         protected void uiThreadAfterFailure(String message,
                                             ClientStatus clientStatus,
                                             ApiStatus apiStatus) {
+            LoginActivity.this.usernameEditText.setEnabled(true);
+            LoginActivity.this.passwordEditText.setEnabled(true);
+            LoginActivity.this.submitButton.setEnabled(true);
 
             // Display error message.
             Toast.makeText(LoginActivity.this,

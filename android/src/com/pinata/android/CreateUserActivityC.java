@@ -171,6 +171,9 @@ public class CreateUserActivityC extends Activity {
         @Override
         protected void uiThreadBefore() {
             // TODO: start wait cursor animation.
+            CreateUserActivityC.this.emailEditText.setEnabled(false);
+            CreateUserActivityC.this.usernameEditText.setEnabled(false);
+            CreateUserActivityC.this.passwordEditText.setEnabled(false);
 
             // Cache any data from the UI that we need for this request.
             this.username = usernameEditText.getText().toString();
@@ -265,6 +268,14 @@ public class CreateUserActivityC extends Activity {
         protected void uiThreadAfterFailure(String message,
                                             ClientStatus clientStatus,
                                             ApiStatus apiStatus) {
+            // TODO: wait cursor.
+
+            // Disable controls while we're waiting for response.
+            CreateUserActivityC.this.emailEditText.setEnabled(true);
+            CreateUserActivityC.this.usernameEditText.setEnabled(true);
+            CreateUserActivityC.this.passwordEditText.setEnabled(true);
+
+            // Error message toast.
             Toast.makeText(CreateUserActivityC.this,
                            message,
                            Toast.LENGTH_SHORT).show();
