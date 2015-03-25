@@ -7,6 +7,11 @@ import java.util.Date;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -14,8 +19,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.View;
-import android.view.Window;
 
 import com.pinata.android.client.*;
 import com.pinata.android.client.http.*;
@@ -25,24 +28,34 @@ import com.pinata.shared.*;
  * CreateUserActivity UI Handling Routines.
  * @author Christian Gunderman
  */
-public class CreateUserActivity extends Activity {
+public class CreateUserActivityC extends Activity {
+
+    /** Specifies an Intent extra for passing the gender. */
+    public static final String EXTRA_GENDER = "GENDER";
+    /** First name intent extra id. */
+    public static final String EXTRA_FIRST_NAME = "FIRST_NAME";
+    /** Last name intent extra id. */
+    public static final String EXTRA_LAST_NAME = "LAST_NAME";
+    /** Birthday intent extra id. */
+    public static final String EXTRA_BIRTHDAY = "BIRTHDAY";
+
+    /** The gender String for the new user. */
+    private String gender;
+    /** The user's first name. */
+    private String firstName;
+    /** The user's last name. */
+    private String lastName;
+    /** The user's birthday as a long in UNIX millis. time. */
+    private long birthday;
+
+    /** The email EditText*/
+    private EditText emailEditText;
     /** The username EditText. */
     private EditText usernameEditText;
     /** The password EditText. */
     private EditText passwordEditText;
-    /** The first name EditText. */
-    private EditText firstNameEditText;
-    /** The last name EditText. */
-    private EditText lastNameEditText;
-    /** The gender radiobutton group. */
-    private RadioGroup genderRadioGroup;
-    /** The birthday DatePicker control. */
-    private DatePicker birthdayDatePicker;
-    /** The email EditText*/
-    private EditText emailEditText;
-    /** The Create button. */
+    /** The next button. */
     private Button submitButton;
-
 
     private UserSession session;
 
@@ -57,30 +70,69 @@ public class CreateUserActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         // Load window XML layout.
-        setContentView(R.layout.create_user);
+        setContentView(R.layout.create_user_c);
 
         // Find view buttons and save references to convenient fields.
+        this.emailEditText
+            = (EditText)this.findViewById(R.id.create_user_email_edittext);
         this.usernameEditText
             = (EditText)this.findViewById(R.id.create_user_username_edittext);
         this.passwordEditText
             = (EditText)this.findViewById(R.id.create_user_password_edittext);
-        this.firstNameEditText
-            = (EditText)this.findViewById(R.id.create_user_firstname_edittext);
-        this.lastNameEditText
-            = (EditText)this.findViewById(R.id.create_user_lastname_edittext);
-        this.genderRadioGroup
-            = (RadioGroup)this.findViewById(R.id.create_user_gender_radiogroup);
-        this.birthdayDatePicker
-            = (DatePicker)this.findViewById(R.id.create_user_birthday_datepicker);
-         this.emailEditText
-            = (EditText)this.findViewById(R.id.create_user_email_edittext);
         this.submitButton
             = (Button)this.findViewById(R.id.create_user_submit_button);
+
+        // Unpack values passed from previous activity.
+        this.gender = this.getIntent().getStringExtra(EXTRA_GENDER);
+        this.firstName = this.getIntent().getStringExtra(EXTRA_FIRST_NAME);
+        this.lastName = this.getIntent().getStringExtra(EXTRA_LAST_NAME);
+        this.birthday = this.getIntent().getLongExtra(EXTRA_BIRTHDAY, -1);
+
+        // Check for bundled values.
+        if (this.gender == null ||
+            this.firstName == null ||
+            this.lastName == null ||
+            this.birthday == -1) {
+            Log.e("CreateUserActivityC", "Gender, first name, last name, or " +
+                  "birthday not passed to dialog.");
+            finish();
+        }
+
+        // Add text watcher to each of the boxes to enable next button when
+        // input is given.
+        TextWatcher watcher = new TextWatcher() {
+                public  void afterTextChanged(Editable s) {
+                    tryEnableSubmit();
+                }
+                
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
+                }
+                
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+                }
+            };
+        this.emailEditText.addTextChangedListener(watcher);
+        this.usernameEditText.addTextChangedListener(watcher);
+        this.passwordEditText.addTextChangedListener(watcher);
     }
 
     /**
-     * Called when the submit button is clicked. Makes async server call to
-     * create a new user.
+     * Checks that all fields have SOME input and enables the submit button.
+     */
+    private void tryEnableSubmit() {
+        if (emailEditText.getText().length() > 0 &&
+            usernameEditText.getText().length() > 0 &&
+            passwordEditText.getText().length() > 0) {
+            submitButton.setEnabled(true);
+        } else {
+            submitButton.setEnabled(false);
+        }
+    }
+
+    /**
+     * Called when the submit button is clicked. Creates user.
      * @param The view that was clicked, the submit button.
      */
     public void onSubmitButtonClicked(View view) {
@@ -104,7 +156,7 @@ public class CreateUserActivity extends Activity {
         /** The user's last name. */
         private String lastName;
         /** The ID of the selected gender button, or -1 for none. */
-        private int genderButtonId;
+        private String gender;
         /** The birthday for the new user. */
         private Date birthday;
         /** The email address for the new user. */
@@ -119,20 +171,18 @@ public class CreateUserActivity extends Activity {
         @Override
         protected void uiThreadBefore() {
             // TODO: start wait cursor animation.
+            CreateUserActivityC.this.emailEditText.setEnabled(false);
+            CreateUserActivityC.this.usernameEditText.setEnabled(false);
+            CreateUserActivityC.this.passwordEditText.setEnabled(false);
 
             // Cache any data from the UI that we need for this request.
             this.username = usernameEditText.getText().toString();
             this.password = passwordEditText.getText().toString();
-            this.firstName = firstNameEditText.getText().toString();
-            this.lastName = lastNameEditText.getText().toString();
-            this.genderButtonId
-                = genderRadioGroup.getCheckedRadioButtonId();
+            this.firstName = CreateUserActivityC.this.firstName;
+            this.lastName = CreateUserActivityC.this.lastName;
+            this.gender = CreateUserActivityC.this.gender;
 
-            Calendar calendar = new GregorianCalendar(birthdayDatePicker.getYear(),
-                                                      birthdayDatePicker.getMonth(),
-                                                      birthdayDatePicker.getDayOfMonth());
-
-            this.birthday = new Date(calendar.getTimeInMillis());
+            this.birthday = new Date(CreateUserActivityC.this.birthday);
             this.email = emailEditText.getText().toString();
         }
 
@@ -153,13 +203,11 @@ public class CreateUserActivity extends Activity {
             throws ClientException {
 
             // Check if the user has chosen a gender.
-            User.Gender gender;
-            if (genderButtonId == R.id.create_user_male_radiobutton) {
-                gender = User.Gender.MALE;
-            } else if (genderButtonId == R.id.create_user_female_radiobutton) {
-                gender = User.Gender.FEMALE;
-            } else {
-                throw new ClientException(ClientStatus.APP_MUST_CHOOSE_GENDER);
+            User.Gender gender = null;
+            try {
+                gender = User.Gender.valueOf(this.gender);
+            } catch (IllegalArgumentException ex) {
+                throw new ClientException(ClientStatus.APP_UNKNOWN_ERROR);
             }
 
             // Create new user on server.
@@ -180,7 +228,7 @@ public class CreateUserActivity extends Activity {
          */
         @Override
         protected void uiThreadOperationCancelled() {
-            Toast.makeText(CreateUserActivity.this,
+            Toast.makeText(CreateUserActivityC.this,
                            ClientStatus.APP_CANCELLED.message,
                            Toast.LENGTH_SHORT).show();
         }
@@ -194,7 +242,7 @@ public class CreateUserActivity extends Activity {
          */
         @Override
         protected void uiThreadAfterSuccess() {
-            Toast.makeText(CreateUserActivity.this,
+            Toast.makeText(CreateUserActivityC.this,
                            ClientStatus.OK.message,
                            Toast.LENGTH_SHORT).show();
 
@@ -220,7 +268,15 @@ public class CreateUserActivity extends Activity {
         protected void uiThreadAfterFailure(String message,
                                             ClientStatus clientStatus,
                                             ApiStatus apiStatus) {
-            Toast.makeText(CreateUserActivity.this,
+            // TODO: wait cursor.
+
+            // Disable controls while we're waiting for response.
+            CreateUserActivityC.this.emailEditText.setEnabled(true);
+            CreateUserActivityC.this.usernameEditText.setEnabled(true);
+            CreateUserActivityC.this.passwordEditText.setEnabled(true);
+
+            // Error message toast.
+            Toast.makeText(CreateUserActivityC.this,
                            message,
                            Toast.LENGTH_SHORT).show();
         }
@@ -256,8 +312,10 @@ public class CreateUserActivity extends Activity {
             */
 
             // Cache any data from the UI that we need for this request.
-            this.username = usernameEditText.getText().toString();
-            this.password = passwordEditText.getText().toString();
+            this.username
+                = CreateUserActivityC.this.usernameEditText.getText().toString();
+            this.password
+                = CreateUserActivityC.this.passwordEditText.getText().toString();
         }
 
         /**
@@ -275,7 +333,7 @@ public class CreateUserActivity extends Activity {
         @Override
         protected void backgroundThreadOperation(HttpClient client)
             throws ClientException {
-            CreateUserActivity.this.session = UserSession.start(client,
+            CreateUserActivityC.this.session = UserSession.start(client,
                                                                 username,
                                                                 password);
         }
@@ -287,7 +345,7 @@ public class CreateUserActivity extends Activity {
          */
         @Override
         protected void uiThreadOperationCancelled() {
-            Toast.makeText(CreateUserActivity.this,
+            Toast.makeText(CreateUserActivityC.this,
                            ClientStatus.APP_CANCELLED.message,
                            Toast.LENGTH_SHORT).show();
         }
@@ -311,10 +369,11 @@ public class CreateUserActivity extends Activity {
 
             // Launch profile activity.
             Intent launchActivityIntent
-                = new Intent(CreateUserActivity.this, ProfileActivity.class);
+                = new Intent(CreateUserActivityC.this, ProfileActivity.class);
 
-            CreateUserActivity.this.session.bundleWithIntent(launchActivityIntent);
+            CreateUserActivityC.this.session.bundleWithIntent(launchActivityIntent);
             startActivity(launchActivityIntent);
+            finish();
         }
 
         /**
@@ -337,7 +396,7 @@ public class CreateUserActivity extends Activity {
                                             ApiStatus apiStatus) {
 
             // Display error message.
-            Toast.makeText(CreateUserActivity.this,
+            Toast.makeText(CreateUserActivityC.this,
                            message,
                            Toast.LENGTH_SHORT).show();
         }

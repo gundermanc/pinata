@@ -2,26 +2,35 @@
 <resources>
     <!-- Theme red color -->
     <color name="ui_theme_color_a">#FE003F</color>
+    <color name="ui_theme_color_a_dark">#D30034</color>
 
     <!-- Theme blue color -->
-    <color name="ui_theme_color_b">#00A1D0</color>
+    <color name="ui_theme_color_b">#3DDCFF</color>
+    <color name="ui_theme_color_b_dark">#33B7D4</color>
 
     <!-- General Layout values -->
-    <color name="ui_background_color">#888888</color>
-    <dimen name="ui_vertical_margin">10dp</dimen>
+    <item name="ui_text_shadow_radius" format="float" type="dimen">1.8</item>
+    <item name="ui_text_shadow_dx" format="float" type="dimen">0</item>
+    <item name="ui_text_shadow_dy" format="float" type="dimen">1.5</item>
+    <color name="ui_text_shadow_color">#7F000000</color>
+    <!-- 1 means bold. -->
+    <integer name="ui_text_style">1</integer>
 
     <!-- Static text values -->
     <color name="ui_static_text_color">#FFFFFF</color>
-    <dimen name="ui_static_text_big_size">40dp</dimen>
-    <dimen name="ui_static_text_size">25dp</dimen>
-
-    <color name="ui_button_text_color">#FFFFFF</color>
-    <dimen name="ui_button_text_size">25dp</dimen>
-    <dimen name="ui_label_text_dimension">30dp</dimen>
+    <dimen name="ui_static_text_size">45dp</dimen>
 
     <!-- Edit text values -->
-    <color name="ui_edittext_background_color">#FFFFFF</color>
-    <color name="ui_edittext_hinttext_color">#999999</color>
-    <color name="ui_edittext_text_color">#000000</color>
-    <dimen name="ui_edittext_text_size">25dp</dimen>
+    <color name="ui_edittext_background_color">#00000000</color>
+    <color name="ui_edittext_hinttext_color">#FFFFFF</color>
+    <color name="ui_edittext_text_color">@color/ui_theme_color_b</color>
+    <dimen name="ui_edittext_text_size">45dp</dimen>
+    <!-- 1 means bold. -->
+    <integer name="ui_edittext_text_style">1</integer>
+
+    <!-- Button values -->
+    <color name="ui_button_color">#00000000</color>
+    <color name="ui_button_text_color">#FFFFFF</color>
+    <color name="ui_button_text_disabled_color">#999999</color>
+    <dimen name="ui_button_text_size">72dp</dimen>
 </resources>

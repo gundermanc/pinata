@@ -43,7 +43,7 @@ public class GreeterActivity extends Activity {
      */
     public void onCreateUserButtonClicked(View view) {
         Intent launchActivityIntent
-            = new Intent(this, CreateUserActivity.class);
+            = new Intent(this, CreateUserActivityA.class);
 
         startActivity(launchActivityIntent);
     }
