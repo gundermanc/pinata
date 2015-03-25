@@ -6,6 +6,7 @@ import java.net.URI;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.DELETE;
@@ -17,6 +18,8 @@ import javax.ws.rs.core.UriInfo;
 
 import com.pinata.service.datatier.SQLConnection;
 import com.pinata.service.objectmodel.Event;
+import com.pinata.service.objectmodel.User;
+import com.pinata.service.objectmodel.UserSession;
 
 import com.pinata.shared.ApiException;
 import com.pinata.shared.ApiStatus;
@@ -44,7 +47,8 @@ public class Events1Resource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response post(String jsonBody) throws ApiException {
+    public Response post(@HeaderParam(UserSession.HEADER) String sessionHeader, String jsonBody) throws ApiException {
+
         CreateEventRequest request = new CreateEventRequest();
         request.deserializeFrom(jsonBody);
 
@@ -52,11 +56,14 @@ public class Events1Resource {
 
         Event event = null;
         try {
+            UserSession session = UserSession.resume(sql, sessionHeader);
+
             event = Event.create(sql,
                                request.name,
                                request.location,
                                request.date,
-                               request.byob);
+                               request.byob, 
+                               session.getUser());
         } finally {
             sql.close();
         }

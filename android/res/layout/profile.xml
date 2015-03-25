@@ -22,4 +22,14 @@
       android:textColor="@color/ui_button_text_color"
       android:textSize="@dimen/ui_button_text_size"
       />
+  <Button
+      android:id="@+id/profile_create_event_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/profile_create_event_button_text"
+      android:onClick="onCreateEventButtonClicked"
+      android:background="@color/ui_theme_color_b"
+      android:textColor="@color/ui_button_text_color"
+      android:textSize="@dimen/ui_button_text_size"
+      />
 </LinearLayout>

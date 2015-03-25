@@ -30,12 +30,16 @@ public class EventResponse extends ApiResponse {
     @JSON(include=true, name="byob")
     public boolean byob;
 
+    /** ID of event's host */
+    @JSON(include=true, name="hostID")
+    public int hostID;
+
 
     /**
      * Creates uninitialized EventResponse for client side deserialization.
      */
     public EventResponse() {
-        this(null, -1, null, null, null, false);
+        this(null, -1, null, null, null, false, -1);
     }
 
     /**
@@ -52,12 +56,14 @@ public class EventResponse extends ApiResponse {
                         String name,
                         String location,
                         Date date,
-                        boolean byob) {
+                        boolean byob,
+                        int hostID) {
         super(status);
         this.eventID = eventID;
         this.name = name;
         this.location = location;
         this.date = date;
         this.byob = byob;
+        this.hostID = hostID;
     }
 }

@@ -33,6 +33,9 @@
                   android:label="@string/profile_label"
                   android:screenOrientation="portrait">
         </activity>
+	<activity android:name=".CreateEventActivity"
+                  android:label="@string/create_event_label">
+        </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest> 

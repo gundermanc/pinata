@@ -174,6 +174,7 @@ public class CreateUserActivityC extends Activity {
             CreateUserActivityC.this.emailEditText.setEnabled(false);
             CreateUserActivityC.this.usernameEditText.setEnabled(false);
             CreateUserActivityC.this.passwordEditText.setEnabled(false);
+            CreateUserActivityC.this.submitButton.setEnabled(false);
 
             // Cache any data from the UI that we need for this request.
             this.username = usernameEditText.getText().toString();
@@ -274,6 +275,7 @@ public class CreateUserActivityC extends Activity {
             CreateUserActivityC.this.emailEditText.setEnabled(true);
             CreateUserActivityC.this.usernameEditText.setEnabled(true);
             CreateUserActivityC.this.passwordEditText.setEnabled(true);
+            CreateUserActivityC.this.submitButton.setEnabled(true);
 
             // Error message toast.
             Toast.makeText(CreateUserActivityC.this,

@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Date;
 
+import android.content.Intent;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -58,6 +59,13 @@ public class ProfileActivity extends Activity {
      */
     public void onLogoutButtonClicked(View view) {
         new AsyncDeleteSessionRequest().execute();
+    }
+
+    public void onCreateEventButtonClicked(View view){
+        Intent launchActivityIntent
+            = new Intent(ProfileActivity.this, CreateEventActivity.class);
+        ProfileActivity.this.session.bundleWithIntent(launchActivityIntent);
+        startActivity(launchActivityIntent);
     }
 
     /**

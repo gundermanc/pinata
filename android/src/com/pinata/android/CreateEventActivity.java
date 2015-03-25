@@ -16,6 +16,8 @@ import android.widget.RadioGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.Window;
+import android.util.Log;
 
 import android.view.View;
 
@@ -28,6 +30,9 @@ import com.pinata.shared.*;
  * @author Elliot Essman
  */
 public class CreateEventActivity extends Activity {
+
+    /** Authentication session. */
+    private UserSession session;
 
     /** The application status TextView. */
     private TextView statusTextView;
@@ -51,8 +56,21 @@ public class CreateEventActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Remove title bar.
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         // Load window XML layout.
         setContentView(R.layout.create_event);
+
+        // Unpack session, if there is one.
+        try {
+            this.session = UserSession.unbundleFromIntent(this.getIntent());
+        } catch (ClientException ex) {
+            Log.wtf("CreateEventActivity",
+                    "Malformed or not provided sessionHeader.");
+            this.finish();
+        }
+
 
         // Find view buttons and save references to convenient fields.
         this.statusTextView 
@@ -141,6 +159,9 @@ public class CreateEventActivity extends Activity {
         @Override
         protected void backgroundThreadOperation(HttpClient client)
             throws ClientException {
+
+            client.setUserSession(session);
+        
             // Create new event on server.
             Event.create(client,
                         eventname,

@@ -1,6 +1,8 @@
 package com.pinata.service.objectmodel;
 
 import java.util.Date;
+import java.util.List;
+import java.util.LinkedList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,6 +41,8 @@ public class Event {
     private Date date;
     /** Event's bring your own beer. */
     private Boolean byob;
+    /** The uid of the host of the event */
+    private int hostID;
 
     /**
      * Creates a new Event and stores in data tier.
@@ -49,13 +53,15 @@ public class Event {
      * @param location A description of where the event is.
      * @param date The date for the event.
      * @param byob Short for bring your own beer.
+     * @param hostUser The host of the event.
      * @return A new Event object containing the created Event.
      */
     public static Event create(SQLConnection sql,
                                String name,
                                String location,
                                Date date,
-                               Boolean byob) throws ApiException {
+                               Boolean byob, 
+                               User hostUser) throws ApiException {
 
         // Null check everything:
         OMUtil.sqlCheck(sql);
@@ -63,6 +69,7 @@ public class Event {
         OMUtil.nullCheck(location);
         OMUtil.nullCheck(date);
         OMUtil.nullCheck(byob);
+        OMUtil.nullCheck(hostUser);
 
         // Check name length.
         if (name.length() > NAME_MAX || name.length() < NAME_MIN) {
@@ -76,13 +83,13 @@ public class Event {
 
         // Check for future dates.
         Date today = new Date();
-        if (!today.after(date)) {
+        if (today.after(date)) {
             throw new ApiException(ApiStatus.APP_INVALID_EVENT_DATE);
         }
 
         // Query DB.
-        int eid = EventsTable.insertEvent(sql, name, location, date, byob);
-        return new Event(eid, name, location, date, byob);
+        int eid = EventsTable.insertEvent(sql, name, location, date, byob, hostUser.getUid());
+        return new Event(eid, name, location, date, byob, hostUser.getUid());
     }
 
     /**
@@ -113,12 +120,13 @@ public class Event {
                             result.getString("name"),
                             result.getString("location"),
                             result.getDate("date"),
-                            result.getBoolean("byob"));
+                            result.getBoolean("byob"),
+                            result.getInt("hostID"));
         } catch (SQLException ex) {
             throw new ApiException(ApiStatus.DATABASE_ERROR, ex);
         }
     }
-
+    
     /**
      * Deletes an event.
      * @throws ApiException If a database error occurs.
@@ -185,13 +193,18 @@ public class Event {
         return this.byob;
     }
 
+    int getHost(){
+        return this.hostID;
+    }
+
     public EventResponse toResponse(ApiStatus status) {
         return new EventResponse(status,
                                 this.getID(),
                                 this.getName(),
                                 this.getLocation(),
                                 this.getDate(),
-                                this.getByob());
+                                this.getByob(),
+                                this.getHost());
     }
 
     /**
@@ -202,12 +215,14 @@ public class Event {
      * @param location The event's location.
      * @param date The event's date.
      * @param byob The byob status of the event.
+     * @param hostID The uid of the host of the event
      */
-    private Event(int eid, String name, String location, Date date, boolean byob) {
+    private Event(int eid, String name, String location, Date date, boolean byob, int hostID) {
         this.eid = eid;
         this.name = name;
         this.location = location;
         this.date = date;
         this.byob = byob;
+        this.hostID = hostID;
     }
 }
