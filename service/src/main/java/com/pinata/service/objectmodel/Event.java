@@ -193,7 +193,7 @@ public class Event {
         return this.byob;
     }
 
-    public int getHost(){
+    int getHost(){
         return this.hostID;
     }
 
