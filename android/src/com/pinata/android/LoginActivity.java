@@ -39,6 +39,8 @@ public class LoginActivity extends Activity {
     /** Authentication session. */
     private UserSession session;
 
+    private AsyncClientOperation backgroundOp;
+
     /**
      * Called by Android OS when activity is first started.
      */
@@ -67,7 +69,19 @@ public class LoginActivity extends Activity {
      * @param The view that was clicked, the submit button.
      */
     public void onSubmitButtonClicked(View view) {
-        new AsyncLoginRequest().execute();
+        backgroundOp = new AsyncLoginRequest();
+        backgroundOp.execute();
+    }
+
+    /**
+     * Cancels operation if back button pressed.
+     */
+    public void onBackPressed() {
+        if (backgroundOp != null) {
+            backgroundOp.cancel(true);
+        }
+
+        finish();
     }
 
     /**

@@ -59,6 +59,8 @@ public class CreateUserActivityC extends Activity {
 
     private UserSession session;
 
+    private AsyncClientOperation backgroundOp;
+
     /**
      * Called by Android OS when activity is first started.
      */
@@ -136,7 +138,19 @@ public class CreateUserActivityC extends Activity {
      * @param The view that was clicked, the submit button.
      */
     public void onSubmitButtonClicked(View view) {
-        new AsyncCreateUserRequest().execute();
+        backgroundOp = new AsyncCreateUserRequest();
+        backgroundOp.execute();
+    }
+
+    /**
+     * Cancels operation if back button pressed.
+     */
+    public void onBackPressed() {
+        if (backgroundOp != null) {
+            backgroundOp.cancel(true);
+        }
+
+        finish();
     }
 
     /**
@@ -248,7 +262,8 @@ public class CreateUserActivityC extends Activity {
                            Toast.LENGTH_SHORT).show();
 
             // Login to our new user account.
-            new AsyncLoginRequest().execute();
+            backgroundOp = new AsyncLoginRequest();
+            backgroundOp.execute();
         }
 
         /**

@@ -49,6 +49,8 @@ public class CreateEventActivity extends Activity {
     /** The Create button. */
     private Button submitButton;
 
+    private AsyncClientOperation backgroundOp;
+
     /**
      * Called by Android OS when activity is first started.
      */
@@ -95,7 +97,19 @@ public class CreateEventActivity extends Activity {
      * @param The view that was clicked, the submit button.
      */
     public void onSubmitButtonClicked(View view) {
-        new AsyncCreateEventRequest().execute();
+        backgroundOp = new AsyncCreateEventRequest();
+        backgroundOp.execute();
+    }
+
+    /**
+     * Cancels operation if back button pressed.
+     */
+    public void onBackPressed() {
+        if (backgroundOp != null) {
+            backgroundOp.cancel(true);
+        }
+
+        finish();
     }
 
     /**
