@@ -4,11 +4,15 @@ Pinata Android Application
 INTRO:
  This is the Pinata android application source directory. It contains all
  Android specific code. Anything that is useful both client and server side
- goes in the shared directory instead.
+ goes in the shared directory instead and any Client side object model code
+ or Client networking code goes in the client directory instead.
 
 LAYOUT:
  Standard Android application framework. The libs directory
  is where all third party files that can't be found in maven go.
+ At the moment, the build scripts for dependencies are weird because
+ the android gradle plugin doesn't work properly. As a result, they
+ all just copy dependencies to the libs folder too at the moment.
 
 SETUP:
  - Install Android SDK        - http://developer.android.com/sdk/installing/index.html?pkg=tools
@@ -31,20 +35,18 @@ BUILD:
  everything to work in Gradle eventually, but for now, gradle build
  grabs the dependencies. Ant, however, is the definitive way to install
  to an actual device.
- 
- - Build Shared library       -
- - Switch to Pinata root      - cd ..
- - Switch to shared project   - cd shared
- - Build shared project       - gradle build
- - Switch to Pinata root      - cd ..
- - Switch to android project  - cd android
- - Build android project      - gradle build
+
+(from the root Pinata directory):
+ - Build all pinata source    - gradle build
+ - Switch to android app dir  - cd android
+ - Build android app and deps.- gradle build
 
 DEPLOY:
  - Build debug JAR            - ant debug
- - Deploy to attached device  - gradle installd
+ - Deploy to attached device  - ant installd
 
 ERRORS:
+ If an error occurs, try the following:
  - Device permissions:        - sudo adb start-server
                               - sudo ant installd
 
