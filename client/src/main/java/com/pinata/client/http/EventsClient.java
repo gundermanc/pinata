@@ -1,6 +1,6 @@
-package com.pinata.android.client.http;
+package com.pinata.client.http;
 
-import com.pinata.android.client.*;
+import com.pinata.client.*;
 import com.pinata.shared.*;
 
 /**
@@ -15,17 +15,17 @@ public abstract class EventsClient {
      * Performs CreateEventRequest on events end point.
      * @throws ClientException Thrown if the request is not successful
      * for any reason, including a non 2XX HTTP response code.
-     * @param client The HttpClient to make the request.
+     * @param client The RestClient to make the request.
      * @param request The CreateEventRequest to send via JSON.
      * @return EventResponse The unmodified server response, deserialized
      * to a class, if successful.
      */
-    public static EventResponse doCreateEventRequest(HttpClient client,
+    public static EventResponse doCreateEventRequest(RestClient client,
                                                      CreateEventRequest request)
         throws ClientException {
 
         EventResponse eventResponse = new EventResponse();
-        client.doRequest(HttpClient.Verb.POST,
+        client.doRequest(RestClient.Verb.POST,
                          RESOURCE_EVENTS,
                          null,
                          request,

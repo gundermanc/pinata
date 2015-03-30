@@ -40,10 +40,17 @@ task jankAssDependencyBuild << {
         from '../shared/build/libs/shared.jar'
         into 'libs/'
     }
+
+    // Copy Client library to libs dir
+    copy {
+        from '../client/build/libs/client.jar'
+        into 'libs/'
+    }
 }
 
 task jankAssDependencyClean << {
     delete 'libs/shared.jar'
+    delete 'libs/client.jar'
     delete 'Pinata.apk'
     delete 'Pinata.apk.d'
 }

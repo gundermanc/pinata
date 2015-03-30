@@ -1,11 +1,9 @@
-package com.pinata.android.client;
+package com.pinata.client;
 
 import java.util.UUID;
 
-import android.content.Intent;
-
 import com.pinata.shared.*;
-import com.pinata.android.client.http.*;
+import com.pinata.client.http.*;
 
 /**
  * Android Client side UserSession object. Handles login, logout, and resuming
@@ -29,11 +27,11 @@ public class UserSession {
      * @throws ClientException If unable to contact server, server response
      * is garbled, or server returned an error code. If server error,
      * ClientException contains the corresponding ApiException.
-     * @param client HttpClient.
+     * @param client RestClient.
      * @param username The user to login as.
      * @param password The password of the user to login.
      */
-    public static UserSession start(HttpClient client,
+    public static UserSession start(RestClient client,
                                     String username,
                                     String password) throws ClientException {
 
@@ -58,9 +56,9 @@ public class UserSession {
      * @throws ClientException If unable to contact server, server response
      * is garbled, or server returned an error code. If server error,
      * ClientException contains the corresponding ApiException.
-     * @param client HttpClient.
+     * @param client RestClient.
      */
-    public void end(HttpClient client) throws ClientException {
+    public void end(RestClient client) throws ClientException {
         UsersSessionsClient.doEndUserSessionRequest(client,
                                                     this.sessionUsername,
                                                     this.sessionId.toString());
@@ -90,39 +88,6 @@ public class UserSession {
         } catch (IllegalArgumentException ex) {
             throw new ClientException(ClientStatus.HTTP_INVALID_SESSION);
         }
-    }
-
-    /**
-     * Bundles this user session with the specified intent.
-     * This function is useful for transferring a UserSession between Android
-     * Activities. Unbundle in the next Activity's onCreate method.
-     * @param intent The intent to bundle with.
-     */
-    public void bundleWithIntent(Intent intent) {
-        intent.putExtra(UserSession.INTENT_EXTRA_ID,
-                        this.toSessionHeader());
-    }
-
-    /**
-     * Unbundles this user session from the specified intent.
-     * This function is useful for transferring a UserSession between Android
-     * Activities. Bundle in the calling activity. Bundled user session is not
-     * validated server side until the next server call.
-     * @throws ClientException If the bundled session is incorrectly formatted
-     * or not present.
-     * @param intent The intent to unbundle the UserSession from.
-     * @return The bundled UserSession.
-     */
-    public static UserSession unbundleFromIntent(Intent intent)
-        throws ClientException {
-        String sessionHeader
-            = intent.getStringExtra(UserSession.INTENT_EXTRA_ID);
-
-        if (sessionHeader == null) {
-            throw new ClientException(ClientStatus.HTTP_INVALID_SESSION);
-        }
-
-        return UserSession.fromSessionHeader(sessionHeader);
     }
 
     /**

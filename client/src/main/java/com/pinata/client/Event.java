@@ -1,9 +1,9 @@
-package com.pinata.android.client;
+package com.pinata.client;
 
 import java.util.Date;
 
 import com.pinata.shared.*;
-import com.pinata.android.client.http.*;
+import com.pinata.client.http.*;
 
 /**
  * Android Client side Event object.
@@ -32,7 +32,7 @@ public class Event {
      * @param byob The event's byob status.
      * @return A new Event object containing the created event.
      */
-    public static Event create(HttpClient client,
+    public static Event create(RestClient client,
                               String eventname,
                               String location,
                               Date date,

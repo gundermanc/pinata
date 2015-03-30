@@ -2,8 +2,8 @@ package com.pinata.android;
 
 import android.os.AsyncTask;
 
-import com.pinata.android.client.*;
-import com.pinata.android.client.http.*;
+import com.pinata.client.*;
+import com.pinata.client.http.*;
 import com.pinata.shared.*;
 
 /**
@@ -42,9 +42,9 @@ public abstract class AsyncClientOperation {
      * ClientExceptions thrown from this method are automatically grabbed
      * and unwrapped and dispatched to the uiThreadAfterFailure() method
      * back on the UI thread.
-     * @param client A pre-instantiated HttpClient object.
+     * @param client A pre-instantiated RestClient object.
      */
-    protected abstract void backgroundThreadOperation(HttpClient client)
+    protected abstract void backgroundThreadOperation(RestClient client)
         throws ClientException;
 
     /**
@@ -124,15 +124,15 @@ public abstract class AsyncClientOperation {
 
         /**
          * Background op, saves exceptions to this.ex, and provides
-         * subclasses with premade HttpClient.
+         * subclasses with premade RestClient.
          */
         @Override
         protected Void doInBackground(Void... params) {
 
             // If any exceptions occur, save them for post execution.
-            HttpClient client = null;
+            RestClient client = null;
             try {
-                client = new HttpClient();
+                client = new RestClient();
                 AsyncClientOperation.this.backgroundThreadOperation(client);
             } catch (ClientException ex) {
                 this.ex = ex;

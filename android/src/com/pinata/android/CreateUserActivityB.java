@@ -22,8 +22,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pinata.android.client.*;
-import com.pinata.android.client.http.*;
+import com.pinata.client.*;
+import com.pinata.client.http.*;
 import com.pinata.shared.*;
 
 /**

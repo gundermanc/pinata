@@ -1,9 +1,9 @@
-package com.pinata.android.client;
+package com.pinata.client;
 
 import java.util.Date;
 
 import com.pinata.shared.*;
-import com.pinata.android.client.http.*;
+import com.pinata.client.http.*;
 
 /**
  * Android Client side User object.
@@ -38,7 +38,7 @@ public class User {
      * @param birthday The user's birthday.
      * @return A new User object containing the created user.
      */
-    public static User create(HttpClient client,
+    public static User create(RestClient client,
                               String username,
                               String password,
                               String firstName,
@@ -76,10 +76,10 @@ public class User {
      * reports an error, this client exception will contain an ApiException
      * with the details. Fails with ACCESS_DENIED if you try to delete a user
      * other than yourself.
-     * @param client The HttpClient.
+     * @param client The RestClient.
      * @param username The user to delete.
      */
-    public static void delete(HttpClient client,
+    public static void delete(RestClient client,
                               String username) throws ClientException {
         UsersClient.doDeleteUserRequest(client, username);
     }
@@ -91,9 +91,9 @@ public class User {
      * reports an error, this client exception will contain an ApiException
      * with the details. Fails with ACCESS_DENIED if you try to delete a user
      * other than yourself.
-     * @param client The HttpClient.
+     * @param client The RestClient.
      */
-    public void delete(HttpClient client) throws ClientException {
+    public void delete(RestClient client) throws ClientException {
         delete(client, this.getUsername());
     }
 

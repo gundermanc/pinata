@@ -1,19 +1,19 @@
-package com.pinata.android.client.http;
+package com.pinata.client.http;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import android.net.http.AndroidHttpClient;
-
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import com.pinata.android.client.*;
+import com.pinata.client.*;
 import com.pinata.shared.*;
 
 /**
@@ -22,11 +22,11 @@ import com.pinata.shared.*;
  * close() when done.
  * @author Christian Gunderman
  */
-public class HttpClient {
+public class RestClient {
     /** URL scheme prefix. */
     private static final String SCHEME = "http";
     /** User agent: tells the server who this is that is connecting. */
-    private static final String USER_AGENT = "Android/PinataClient";
+    private static final String USER_AGENT = "Android/RestClient";
     /** Domain name of the server to connect to. */
     private static final String HOSTNAME = "gundersonofboss.case.edu:8080";
 
@@ -34,19 +34,19 @@ public class HttpClient {
     private static final String SESSION_HEADER = "Pinata-Session";
 
     /** The HTTP client object backing this. */
-    private final AndroidHttpClient httpClient;
+    private final DefaultHttpClient httpClient;
     /** The Authenticated Session. */
     private UserSession session;
 
     /**
      * Constructs an HTTP client.
      */
-    public HttpClient() {
-        this.httpClient = AndroidHttpClient.newInstance(USER_AGENT);
+    public RestClient() {
+        this.httpClient = new DefaultHttpClient();
     }
 
     /**
-     * Sets this HttpClient's user session.
+     * Sets this RestClient's user session.
      * @param UserSession Returned by a call to UserSession.start().
      */
     public void setUserSession(UserSession session) {
@@ -54,10 +54,11 @@ public class HttpClient {
     }
 
     /**
-     * Closes this HttpClient.
+     * Closes this RestClient.
      */
     public void close() {
-        this.httpClient.close();
+	// TODO.
+        // this.httpClient.close();
     }
 
     /**

@@ -20,8 +20,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pinata.android.client.*;
-import com.pinata.android.client.http.*;
+import com.pinata.client.*;
+import com.pinata.client.http.*;
 import com.pinata.shared.*;
 
 /**
@@ -211,10 +211,10 @@ public class CreateUserActivityC extends Activity {
          * back on the UI thread.
          * This implementation performs a CreateUser request via the User
          * object.
-         * @param client A pre-instantiated HttpClient object.
+         * @param client A pre-instantiated RestClient object.
          */
         @Override
-        protected void backgroundThreadOperation(HttpClient client)
+        protected void backgroundThreadOperation(RestClient client)
             throws ClientException {
 
             // Check if the user has chosen a gender.
@@ -345,10 +345,10 @@ public class CreateUserActivityC extends Activity {
          * back on the UI thread.
          * This implementation performs a CreateUser request via the User
          * object.
-         * @param client A pre-instantiated HttpClient object.
+         * @param client A pre-instantiated RestClient object.
          */
         @Override
-        protected void backgroundThreadOperation(HttpClient client)
+        protected void backgroundThreadOperation(RestClient client)
             throws ClientException {
             CreateUserActivityC.this.session = UserSession.start(client,
                                                                 username,
@@ -388,7 +388,7 @@ public class CreateUserActivityC extends Activity {
             Intent launchActivityIntent
                 = new Intent(CreateUserActivityC.this, ProfileActivity.class);
 
-            CreateUserActivityC.this.session.bundleWithIntent(launchActivityIntent);
+            Util.bundleSessionWithIntent(session, launchActivityIntent);
             startActivity(launchActivityIntent);
             finish();
         }

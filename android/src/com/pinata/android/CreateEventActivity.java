@@ -21,8 +21,8 @@ import android.util.Log;
 
 import android.view.View;
 
-import com.pinata.android.client.*;
-import com.pinata.android.client.http.*;
+import com.pinata.client.*;
+import com.pinata.client.http.*;
 import com.pinata.shared.*;
 
 /**
@@ -66,7 +66,7 @@ public class CreateEventActivity extends Activity {
 
         // Unpack session, if there is one.
         try {
-            this.session = UserSession.unbundleFromIntent(this.getIntent());
+            this.session = Util.unbundleSessionFromIntent(this.getIntent());
         } catch (ClientException ex) {
             Log.wtf("CreateEventActivity",
                     "Malformed or not provided sessionHeader.");
@@ -168,10 +168,10 @@ public class CreateEventActivity extends Activity {
          * back on the UI thread.
          * This implementation performs a CreateEvent request via the Event
          * object.
-         * @param client A pre-instantiated HttpClient object.
+         * @param client A pre-instantiated RestClient object.
          */
         @Override
-        protected void backgroundThreadOperation(HttpClient client)
+        protected void backgroundThreadOperation(RestClient client)
             throws ClientException {
 
             client.setUserSession(session);

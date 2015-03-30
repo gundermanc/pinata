@@ -19,8 +19,8 @@ import android.widget.Toast;
 import android.view.View;
 import android.view.Window;
 
-import com.pinata.android.client.*;
-import com.pinata.android.client.http.*;
+import com.pinata.client.*;
+import com.pinata.client.http.*;
 import com.pinata.shared.*;
 
 /**
@@ -132,10 +132,10 @@ public class LoginActivity extends Activity {
          * back on the UI thread.
          * This implementation performs a CreateUser request via the User
          * object.
-         * @param client A pre-instantiated HttpClient object.
+         * @param client A pre-instantiated RestClient object.
          */
         @Override
-        protected void backgroundThreadOperation(HttpClient client)
+        protected void backgroundThreadOperation(RestClient client)
             throws ClientException {
             LoginActivity.this.session = UserSession.start(client,
                                                            username,
@@ -175,7 +175,7 @@ public class LoginActivity extends Activity {
             Intent launchActivityIntent
                 = new Intent(LoginActivity.this, ProfileActivity.class);
 
-            LoginActivity.this.session.bundleWithIntent(launchActivityIntent);
+            Util.bundleSessionWithIntent(session, launchActivityIntent);
             startActivity(launchActivityIntent);
         }
 

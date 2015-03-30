@@ -1,6 +1,6 @@
-package com.pinata.android.client.http;
+package com.pinata.client.http;
 
-import com.pinata.android.client.*;
+import com.pinata.client.*;
 import com.pinata.shared.*;
 
 /**
@@ -17,12 +17,12 @@ public abstract class UsersSessionsClient {
     /**
      * Creates a new UserSession.
      * a.k.a.: Logs a user in.
-     * @param client The HttpClient.
+     * @param client The RestClient.
      * @param request The json serializable request for the server.
      * @return The server's verbose response.
      */
     public static UserSessionResponse doCreateUserSessionRequest(
-        HttpClient client,
+        RestClient client,
         CreateUserSessionRequest request) throws ClientException {
 
         // Although this check is done server side, it is critical
@@ -38,7 +38,7 @@ public abstract class UsersSessionsClient {
         String path = String.format(RESOURCE_SESSIONS, request.user, "");
 
         UserSessionResponse response = new UserSessionResponse();
-        client.doRequest(HttpClient.Verb.POST,
+        client.doRequest(RestClient.Verb.POST,
                          path,
                          null,
                          request,
@@ -54,7 +54,7 @@ public abstract class UsersSessionsClient {
      * @param sessionId The unique id for the user's session.
      * @return The server's verbose response.
      */
-    public static UserSessionResponse doEndUserSessionRequest(HttpClient client,
+    public static UserSessionResponse doEndUserSessionRequest(RestClient client,
                                                               String username,
                                                               String sessionId)
         throws ClientException {
@@ -72,7 +72,7 @@ public abstract class UsersSessionsClient {
         String path = String.format(RESOURCE_SESSIONS, username, sessionId);
 
         UserSessionResponse response = new UserSessionResponse();
-        client.doRequest(HttpClient.Verb.DELETE,
+        client.doRequest(RestClient.Verb.DELETE,
                          path,
                          null,
                          null,

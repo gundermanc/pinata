@@ -1,4 +1,4 @@
-package com.pinata.android.client;
+package com.pinata.client;
 
 /**
  * ClientStatus and error messages.

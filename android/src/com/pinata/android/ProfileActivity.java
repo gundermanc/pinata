@@ -18,8 +18,8 @@ import android.view.View;
 import android.view.Window;
 import android.util.Log;
 
-import com.pinata.android.client.*;
-import com.pinata.android.client.http.*;
+import com.pinata.client.*;
+import com.pinata.client.http.*;
 import com.pinata.shared.*;
 
 /**
@@ -46,7 +46,7 @@ public class ProfileActivity extends Activity {
 
         // Unpack session, if there is one.
         try {
-            this.session = UserSession.unbundleFromIntent(this.getIntent());
+            this.session = Util.unbundleSessionFromIntent(this.getIntent());
         } catch (ClientException ex) {
             Log.wtf("ProfileActivity",
                     "Malformed or not provided sessionHeader.");
@@ -64,7 +64,7 @@ public class ProfileActivity extends Activity {
     public void onCreateEventButtonClicked(View view){
         Intent launchActivityIntent
             = new Intent(ProfileActivity.this, CreateEventActivity.class);
-        ProfileActivity.this.session.bundleWithIntent(launchActivityIntent);
+        Util.bundleSessionWithIntent(session, launchActivityIntent);
         startActivity(launchActivityIntent);
     }
 
@@ -96,10 +96,10 @@ public class ProfileActivity extends Activity {
          * back on the UI thread.
          * This implementation performs a CreateUser request via the User
          * object.
-         * @param client A pre-instantiated HttpClient object.
+         * @param client A pre-instantiated RestClient object.
          */
         @Override
-        protected void backgroundThreadOperation(HttpClient client)
+        protected void backgroundThreadOperation(RestClient client)
             throws ClientException {
 
             // Let client know that we are logged in.
