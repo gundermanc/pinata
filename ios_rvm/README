@@ -9,10 +9,6 @@ INTRO:
  rewriting the networking stack.
 
 SETUP:
- You MIGHT be able to COMPILE the Java code for the app on non-Mac computers
- since it IS just java, however will WILL need OS X and X Code to actually run
- it in the simulator.
-
  - Obtain Mac OS X Monstrosity (There is a rant waiting to be unleashed here).
  - Install newest X Code. Probably 6 or greater.
  - Install Gradle.
@@ -20,7 +16,7 @@ SETUP:
     brew install gradle
 
 BUILD:
- - Build Java Code         - gradle build  (might work on non-Macs).
+ - Build Java Code         - gradle ios_rvm:build  (does not build on non-Macs).
 
 DEPLOY:
  - Deploy to iOS Simulator - gradle launchIPhoneSimulator
