@@ -1,4 +1,9 @@
-// Pull the plugin from Maven Central
+// Pinata for RoboVM iOS build script
+// (C)2015 Christian Gunderman
+
+// NOTE: This script only works on Mac OS X and with Gradle and XCode installed.
+
+
 buildscript {
 
     project.ext.roboVMVersion = "1.0.0"
@@ -14,35 +19,50 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'robovm'
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-        }
-    }
-}
-
 repositories {
     mavenLocal()
     mavenCentral()
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
-dependencies {
-    compile group: 'org.robovm', name: 'robovm-rt', version: project.roboVMVersion
-    compile group: 'org.robovm', name: 'robovm-cocoatouch', version: project.roboVMVersion
 
-    compile project(':shared')
-    compile project(':client')
-}
 
-robovm {
-    // Configure robovm
-}
+// Check for Mac OS X.
+// If a mac, define the Mac build targets and apply the plugins.
+if (System.properties['os.name'].toLowerCase().contains('mac')) {
+    println "Building ios_rvm target..."
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
+    apply plugin: 'java'
+    apply plugin: 'robovm'
+
+    sourceSets {
+        main {
+            java {
+                srcDir 'src'
+            }
+        }
+    }
+
+    dependencies {
+        compile group: 'org.robovm', name: 'robovm-rt', version: project.roboVMVersion
+        compile group: 'org.robovm', name: 'robovm-cocoatouch', version: project.roboVMVersion
+
+        compile project(':shared')
+        compile project(':client')
+    }
+
+    robovm {
+        // Configure robovm
+    }
+
+    task wrapper(type: Wrapper) {
+        gradleVersion = '2.0'
+    }
+
+} else {
+
+    // If not a Mac, print a warning but fail silently so build still works.
+    task build << {
+        println "**Skipping ios_rvm build. Not on mac.**"
+    }
 }
