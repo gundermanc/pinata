@@ -8,17 +8,21 @@ import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIWindow;
 
-import com.pinata.iosrvm.viewcontrollers.MyViewController;
+import com.pinata.iosrvm.viewcontrollers.GreeterViewController;
 
+/**
+ * AppDelegate Class. A.k.a.: RoboVM iOS App entry point.
+ * @author Christian Gunderman
+ */
 public class AppDelegate extends UIApplicationDelegateAdapter {
     private UIWindow window;
-    private MyViewController rootViewController;
+    private GreeterViewController rootViewController;
 
     @Override
     public boolean didFinishLaunching (UIApplication application,
                                        UIApplicationLaunchOptions launchOptions) {
         // Set up the view controller.
-        rootViewController = new MyViewController();
+        rootViewController = new GreeterViewController();
 
         // Create a new window at screen size.
         window = new UIWindow(UIScreen.getMainScreen().getBounds());
