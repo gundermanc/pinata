@@ -31,6 +31,6 @@ public class Button extends UIButton {
     }
 
     public void setFontSize(float size) {
-        this.getTitleLabel().setFont(UIFont.getBoldSystemFont(64f));
+        this.getTitleLabel().setFont(UIFont.getBoldSystemFont(size));
     }
 }

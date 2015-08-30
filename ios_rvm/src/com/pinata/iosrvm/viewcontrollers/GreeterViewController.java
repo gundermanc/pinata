@@ -6,6 +6,7 @@ import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.uikit.NSTextAlignment;
 import org.robovm.apple.uikit.UIButton;
 import org.robovm.apple.uikit.UIColor;
+import org.robovm.apple.uikit.UIControl;
 import org.robovm.apple.uikit.UIControlState;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIFont;
@@ -33,8 +34,8 @@ import com.pinata.iosrvm.views.Button;
  * @author Christian Gunderman
  */
 public class GreeterViewController extends UIViewController {
-    private UIButton loginButton;
-    private UIButton createUserButton;
+    private Button loginButton;
+    private Button createUserButton;
 
     public GreeterViewController () {
         UIView view = this.getView();
@@ -63,13 +64,17 @@ public class GreeterViewController extends UIViewController {
         this.createUserButton.setBackgroundColor(Theme.UI_COLOR_A);
         this.createUserButton.setFontSize(Theme.UI_TEXT_BIG_SIZE);
 
+        // Set clicked listeners.
+        this.loginButton.addOnTouchUpInsideListener(new LoginButtonListener());
+
         // Add views to parent.
         view.addSubview(this.loginButton);
         view.addSubview(this.createUserButton);
     }
 
-    @Override
-    public void touchesBegan (NSSet<UITouch> touches, UIEvent event) {
-
+    private class LoginButtonListener implements UIControl.OnTouchUpInsideListener {
+        public void onTouchUpInside(UIControl control, UIEvent event) {
+            getNavigationController().pushViewController(new LoginViewController(), true);
+        }
     }
 }

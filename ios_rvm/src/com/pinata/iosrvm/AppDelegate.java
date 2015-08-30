@@ -8,7 +8,7 @@ import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIWindow;
 
-import com.pinata.iosrvm.viewcontrollers.GreeterViewController;
+import com.pinata.iosrvm.viewcontrollers.GreeterNavigationController;
 
 /**
  * AppDelegate Class. A.k.a.: RoboVM iOS App entry point.
@@ -16,20 +16,20 @@ import com.pinata.iosrvm.viewcontrollers.GreeterViewController;
  */
 public class AppDelegate extends UIApplicationDelegateAdapter {
     private UIWindow window;
-    private GreeterViewController rootViewController;
+    private GreeterNavigationController rootController;
 
     @Override
     public boolean didFinishLaunching (UIApplication application,
                                        UIApplicationLaunchOptions launchOptions) {
         // Set up the view controller.
-        rootViewController = new GreeterViewController();
+        this.rootController = new GreeterNavigationController();
 
         // Create a new window at screen size.
-        window = new UIWindow(UIScreen.getMainScreen().getBounds());
+        this.window = new UIWindow(UIScreen.getMainScreen().getBounds());
         // Set our viewcontroller as the root controller for the window.
-        window.setRootViewController(rootViewController);
+        this.window.setRootViewController(this.rootController);
         // Make the window visible.
-        window.makeKeyAndVisible();
+        this.window.makeKeyAndVisible();
 
         return true;
     }

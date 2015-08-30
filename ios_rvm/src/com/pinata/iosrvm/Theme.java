@@ -17,6 +17,9 @@ public abstract class Theme {
     public static final UIColor UI_SHADOW_COLOR
         = new UIColor(0.0f, 0.0f, 0.0f, 0.83137254902f);
 
+    public static final UIColor UI_TEXT_COLOR
+        = new UIColor(1.0f, 1.0f, 1.0f, 1.0f);
+
     // Sizes.
     public static final float UI_TEXT_BIG_SIZE = 74f;
     public static final float UI_TEXT_SIZE = 45f;
